@@ -1,11 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://b6gpic6yympc4"]
+[gd_scene load_steps=8 format=3 uid="uid://b6gpic6yympc4"]
 
 [ext_resource type="Script" uid="uid://u8bg1t6muura" path="res://Scripts/Player.cs" id="1_v0iea"]
 [ext_resource type="PackedScene" uid="uid://mkag7wgy2fpm" path="res://Scenes/PlayerManager.tscn" id="2_cvnsp"]
+[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="3_dewec"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="4_5ixxa"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_cvnsp"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6t5aa"]
+
+[sub_resource type="Resource" id="Resource_nn08x"]
+script = ExtResource("4_5ixxa")
+duration = 1.0
+transition = 0
+ease = 2
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("rb")]
 script = ExtResource("1_v0iea")
@@ -20,20 +28,27 @@ shape = SubResource("CapsuleShape3D_6t5aa")
 [node name="Camera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.500529, 0)
 
-[node name="WallRaycastRight" type="RayCast3D" parent="."]
+[node name="Raycasts" type="Node3D" parent="."]
+
+[node name="WallRaycastRight" type="RayCast3D" parent="Raycasts"]
 target_position = Vector3(0.7, 0, 0)
 debug_shape_thickness = 5
 
-[node name="WallRaycastLeft" type="RayCast3D" parent="."]
+[node name="WallRaycastLeft" type="RayCast3D" parent="Raycasts"]
 target_position = Vector3(-0.7, 0, 0)
 debug_shape_thickness = 5
 
 [node name="PlayerComponents" parent="." instance=ExtResource("2_cvnsp")]
 
 [node name="WallManager" parent="PlayerComponents" index="0" node_paths=PackedStringArray("wallRayCast")]
-wallRayCast = [NodePath("../../WallRaycastRight"), NodePath("../../WallRaycastLeft")]
+wallRayCast = [NodePath("../../Raycasts/WallRaycastRight"), NodePath("../../Raycasts/WallRaycastLeft")]
 
 [node name="Camera" parent="PlayerComponents" index="1" node_paths=PackedStringArray("playerCamera")]
 playerCamera = NodePath("../../Camera")
+
+[node name="PhantomCamera3D" type="Node3D" parent="."]
+script = ExtResource("3_dewec")
+tween_resource = SubResource("Resource_nn08x")
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
 [editable path="PlayerComponents"]
