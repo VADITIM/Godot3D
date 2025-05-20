@@ -2,11 +2,11 @@ using Godot;
 
 public partial class WallManager : Node
 {
-	public bool isWalling = false;
-	public bool IsWalling { get => isWalling; set => isWalling = value; }
-
 	[Export] public RayCast3D[] wallRayCast = new RayCast3D[2];
 	public Timer wallTimer;
+
+	public bool isWalling = false;
+	public bool IsWalling { get => isWalling; set => isWalling = value; }
 
 	public override void _Ready()
 	{
@@ -34,16 +34,15 @@ public partial class WallManager : Node
 		}
 	}
 	
-	
-	public void HandleWalling()
+	public void HandleWalling(float currentSpeed)
 	{
-		if (isWalling)
+		if (isWalling && PlayerComponents.Instance.Movement.currentSpeed > 10)
 		{
-			PlayerComponents.Instance.Player.velocity.Y = 0;
-			PlayerComponents.Instance.Player.gravity = 0;
+			PlayerComponents.Instance.Movement.velocity.Y = 0;
+			PlayerComponents.Instance.Movement.gravity = 0;
 		}
 		else 
-			PlayerComponents.Instance.Player.gravity = 9.8f;
+			PlayerComponents.Instance.Movement.gravity = 9.8f;
 	}
 
 	public void HandleWallJump()
@@ -56,7 +55,7 @@ public partial class WallManager : Node
 				wallTimer.Start();
 				
 				GD.Print("Wall Jump");
-				PlayerComponents.Instance.Player.velocity.Y = PlayerComponents.Instance.Player.jumpForce;
+				PlayerComponents.Instance.Movement.velocity.Y = PlayerComponents.Instance.Movement.jumpForce;
 			}
 		}
 	}

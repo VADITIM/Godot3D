@@ -33,7 +33,7 @@ public partial class Camera : Node
         cameraXRotation = Mathf.Clamp(cameraXRotation, -Mathf.Pi / 2, Mathf.Pi / 2);
         playerCamera.Rotation = new Vector3(cameraXRotation, 0, 0);
 
-        PlayerComponents.Instance.Player.player.RotateY(-mouseMotion.Relative.X * mouseSensitivity);
+        PlayerComponents.Instance.Player.rb.RotateY(-mouseMotion.Relative.X * mouseSensitivity);
     }
 
 }

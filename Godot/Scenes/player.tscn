@@ -7,9 +7,9 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6t5aa"]
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("player")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("rb")]
 script = ExtResource("1_v0iea")
-player = NodePath(".")
+rb = NodePath(".")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_cvnsp")
@@ -17,23 +17,23 @@ mesh = SubResource("CapsuleMesh_cvnsp")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_6t5aa")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.500529, 0)
 
-[node name="RayCast3D" type="RayCast3D" parent="."]
+[node name="WallRaycastRight" type="RayCast3D" parent="."]
 target_position = Vector3(0.7, 0, 0)
 debug_shape_thickness = 5
 
-[node name="RayCast3D2" type="RayCast3D" parent="."]
+[node name="WallRaycastLeft" type="RayCast3D" parent="."]
 target_position = Vector3(-0.7, 0, 0)
 debug_shape_thickness = 5
 
 [node name="PlayerComponents" parent="." instance=ExtResource("2_cvnsp")]
 
 [node name="WallManager" parent="PlayerComponents" index="0" node_paths=PackedStringArray("wallRayCast")]
-wallRayCast = [NodePath("../../RayCast3D"), NodePath("../../RayCast3D2")]
+wallRayCast = [NodePath("../../WallRaycastRight"), NodePath("../../WallRaycastLeft")]
 
 [node name="Camera" parent="PlayerComponents" index="1" node_paths=PackedStringArray("playerCamera")]
-playerCamera = NodePath("../../Camera3D")
+playerCamera = NodePath("../../Camera")
 
 [editable path="PlayerComponents"]

@@ -6,6 +6,7 @@ public partial class PlayerComponents : Node
     public WallManager WallManager;
     public Player Player;
     public Camera Camera;
+    public Movement Movement;
     
     public static PlayerComponents Instance { get; private set; }
 
@@ -16,5 +17,6 @@ public partial class PlayerComponents : Node
         Player = GetNode<Player>("/root/Main/Player");
         WallManager = GetNode<WallManager>("/root/Main/Player/PlayerComponents/WallManager");
         Camera = GetNode<Camera>("/root/Main/Player/PlayerComponents/Camera");
+        Movement = GetNode<Movement>("/root/Main/Player/PlayerComponents/Movement");
     }
 }
