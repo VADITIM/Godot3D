@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://mkag7wgy2fpm"]
+
+[ext_resource type="Script" uid="uid://c3dq2ex33iucc" path="res://Scripts/PlayerComponents.cs" id="1_3bde7"]
+[ext_resource type="Script" uid="uid://r54lv0ixd2lr" path="res://Scripts/WallManager.cs" id="2_8h6nq"]
+[ext_resource type="Script" uid="uid://dmtfmxgv6dw8v" path="res://Scripts/Camera.cs" id="3_8h6nq"]
+
+[node name="PlayerComponents" type="Node"]
+script = ExtResource("1_3bde7")
+
+[node name="WallManager" type="Node" parent="."]
+script = ExtResource("2_8h6nq")
+
+[node name="Camera" type="Node" parent="."]
+script = ExtResource("3_8h6nq")
