@@ -19,6 +19,10 @@ public partial class Player : CharacterBody3D
     {
         PlayerComponents.Instance.Movement.HandleGravity((float)delta);
         PlayerComponents.Instance.WallManager.CheckWall();
-        PlayerComponents.Instance.WallManager.HandleWalling(currentSpeed: PlayerComponents.Instance.Movement.speed);
+        PlayerComponents.Instance.WallManager.HandleWalling((float)delta);
+        GD.Print(PlayerComponents.Instance.Movement.currentSpeed);
+
+        
+
     }
 }

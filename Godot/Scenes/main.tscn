@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://c25rx1plwdeb7"]
+[gd_scene load_steps=6 format=3 uid="uid://c25rx1plwdeb7"]
 
 [ext_resource type="PackedScene" uid="uid://b6gpic6yympc4" path="res://Scenes/Player.tscn" id="1_r150o"]
 
@@ -15,6 +15,9 @@ sky = SubResource("Sky_bo1nx")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r150o"]
+albedo_color = Color(0.247059, 0.568627, 0.0941176, 1)
+
 [node name="Main" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -28,6 +31,7 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, 0.283186, 0, 0, 0, 1, 0, 0, 0)
 use_collision = true
 size = Vector3(50, 1, 50)
+material = SubResource("StandardMaterial3D_r150o")
 
 [node name="Player" parent="." instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.6126, 2.58937, 9.17618)

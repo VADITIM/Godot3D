@@ -4,6 +4,7 @@ public partial class Camera : Node
 {
     [Export] private Camera3D playerCamera;
     [Export] private float mouseSensitivity = 0.002f;
+    
     private float cameraXRotation = 0f;
 
     public override void _Input(InputEvent @event)
