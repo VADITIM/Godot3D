@@ -11,18 +11,14 @@ public partial class Player : CharacterBody3D
 
     public override void _PhysicsProcess(double delta)
     {
-        PlayerComponents.Instance.Movement.HandleMovement((float)delta);
-        PlayerComponents.Instance.WallManager.HandleWallJump();
+        Components.Instance.Movement.HandleMovement((float)delta);
+        Components.Instance.WallManager.HandleWallJump();
+        Components.Instance.WallManager.CheckWall();
+        Components.Instance.WallManager.HandleWalling();
     }
 
     public override void _Process(double delta)
     {
-        PlayerComponents.Instance.Movement.HandleGravity((float)delta);
-        PlayerComponents.Instance.WallManager.CheckWall();
-        PlayerComponents.Instance.WallManager.HandleWalling((float)delta);
-        GD.Print(PlayerComponents.Instance.Movement.currentSpeed);
-
-        
-
+        Components.Instance.Movement.HandleGravity((float)delta);
     }
 }

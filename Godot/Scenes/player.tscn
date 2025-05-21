@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://b6gpic6yympc4"]
 
 [ext_resource type="Script" uid="uid://u8bg1t6muura" path="res://Scripts/Player.cs" id="1_v0iea"]
-[ext_resource type="PackedScene" uid="uid://mkag7wgy2fpm" path="res://Scenes/PlayerManager.tscn" id="2_cvnsp"]
+[ext_resource type="PackedScene" uid="uid://mkag7wgy2fpm" path="res://Scenes/Components.tscn" id="2_cvnsp"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="3_dewec"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="4_5ixxa"]
 
@@ -38,12 +38,13 @@ debug_shape_thickness = 5
 target_position = Vector3(-0.7, 0, 0)
 debug_shape_thickness = 5
 
-[node name="PlayerComponents" parent="." instance=ExtResource("2_cvnsp")]
+[node name="Components" parent="." instance=ExtResource("2_cvnsp")]
 
-[node name="WallManager" parent="PlayerComponents" index="0" node_paths=PackedStringArray("wallRayCast")]
-wallRayCast = [NodePath("../../Raycasts/WallRaycastRight"), NodePath("../../Raycasts/WallRaycastLeft")]
+[node name="WallManager" parent="Components" index="0" node_paths=PackedStringArray("leftWallRayCast", "rightWallRayCast")]
+leftWallRayCast = NodePath("../../Raycasts/WallRaycastLeft")
+rightWallRayCast = NodePath("../../Raycasts/WallRaycastRight")
 
-[node name="Camera" parent="PlayerComponents" index="1" node_paths=PackedStringArray("playerCamera")]
+[node name="Camera" parent="Components" index="1" node_paths=PackedStringArray("playerCamera")]
 playerCamera = NodePath("../../Camera")
 
 [node name="PhantomCamera3D" type="Node3D" parent="."]
@@ -51,4 +52,4 @@ script = ExtResource("3_dewec")
 tween_resource = SubResource("Resource_nn08x")
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
-[editable path="PlayerComponents"]
+[editable path="Components"]
