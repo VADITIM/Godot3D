@@ -61,33 +61,58 @@ public partial class Walling : Node
 	public void HandleWalling()
 	{
 		bool isSprinting = Components.Instance.Movement.isSprinting;
-		float gravity = Components.Instance.Movement.gravity;
-
+		
+		// Store original gravity for restoration when not on wall
+		float originalGravity = 13.8f;
+		
 		if (onWall && isSprinting)
 		{
+			// Zero out vertical velocity and gravity when on wall
 			Components.Instance.Movement.velocity.Y = 0;
-			gravity = 0;
+			Components.Instance.Movement.gravity = 0;
 		}
 		else
-			gravity = 13.8f;
+		{
+			// Restore normal gravity when not on wall
+			Components.Instance.Movement.gravity = originalGravity;
+		}
 	}
 
 	public void HandleWallJump()
 	{
-		var collision = leftWallCollision || rightWallCollision;
+		bool collision = leftWallCollision || rightWallCollision;
 
 		if (onWall && Input.IsActionJustPressed("jump"))
 		{
 			wallTimer.Start();
 			isWallJumping = true;
 			onWall = false;
+			
+			// Calculate wall jump direction based on which wall we're on
+			Vector3 jumpDirection = Vector3.Zero;
+			if (leftWallCollision)
+			{
+				jumpDirection = new Vector3(1, 0, 0); // Push right when jumping from left wall
+			}
+			else if (rightWallCollision)
+			{
+				jumpDirection = new Vector3(-1, 0, 0); // Push left when jumping from right wall
+			}
+			
+			// Apply wall jump force and restore gravity
+			Components.Instance.Movement.velocity.Y = Components.Instance.Movement.jumpForce;
+			Components.Instance.Movement.gravity = 13.8f;
+			
+			// Apply horizontal push based on wall side
+			if (jumpDirection != Vector3.Zero)
+			{
+				// Transform direction to align with camera
+				jumpDirection = Components.Instance.Player.rb.Transform.Basis * jumpDirection;
+				Components.Instance.Movement.velocity += jumpDirection * 5.0f;
+			}
+			
 			WallJumping();
 			GD.Print("Wall Jump");
-
-			if (collision)
-			{
-				Components.Instance.Movement.velocity.Y = Components.Instance.Movement.jumpForce / 2;
-			}
 		}
 	}
 
@@ -97,8 +122,8 @@ public partial class Walling : Node
 		float currentSpeed = Components.Instance.Movement.currentSpeed;
 
 		if (currentSpeed <= 70)
-			Components.Instance.Movement.currentSpeed += Components.Instance.Movement.currentSpeed / 2;
+			Components.Instance.Movement.currentSpeed += currentSpeed / 2;
 		else if (currentSpeed > 70)
-			Components.Instance.Movement.currentSpeed += Components.Instance.Movement.currentSpeed / 10;
+			Components.Instance.Movement.currentSpeed += currentSpeed / 10;
 	}
 }

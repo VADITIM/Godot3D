@@ -1,12 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://c25rx1plwdeb7"]
+[gd_scene load_steps=14 format=3 uid="uid://c25rx1plwdeb7"]
 
 [ext_resource type="Texture2D" uid="uid://lb04gh2uw2ch" path="res://textures/stone-wall_BaseColor.png" id="1_jw32o"]
 [ext_resource type="PackedScene" uid="uid://b6gpic6yympc4" path="res://Scenes/Player.tscn" id="1_r150o"]
 [ext_resource type="Texture2D" uid="uid://ct8qaprv6gf8s" path="res://textures/stone-wall_Ao.png" id="2_50glp"]
-[ext_resource type="PackedScene" uid="uid://c1nhfdc0l462p" path="res://Scenes/ui.tscn" id="2_idj7w"]
-[ext_resource type="Script" uid="uid://cth88od8svf8y" path="res://Scripts/UI/SpeedDisplay.cs" id="3_kln2b"]
 [ext_resource type="Texture2D" uid="uid://bjky5hd8yfqo5" path="res://textures/stone-wall_Normal.png" id="3_vy5pj"]
 [ext_resource type="Texture2D" uid="uid://0ji65fde3abv" path="res://textures/stone-wall_Roughness.png" id="4_bmxlf"]
+[ext_resource type="PackedScene" uid="uid://cex06vcc12y80" path="res://Scenes/Game UI.tscn" id="6_v1gob"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jjgbg"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -37,9 +36,6 @@ albedo_color = Color(0.909804, 0.87451, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pbw6q"]
 albedo_color = Color(0, 0.584314, 0.992157, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_kln2b"]
-font_size = 50
 
 [node name="Main" type="Node3D"]
 
@@ -243,15 +239,11 @@ transform = Transform3D(-3.42084, 0, -8.74228e-08, 0, 2.63687, 0, 2.99059e-07, 0
 size = Vector3(12.2411, 5.646, 1)
 material = SubResource("StandardMaterial3D_pbw6q")
 
-[node name="Control" parent="." instance=ExtResource("2_idj7w")]
+[node name="Game UI" parent="." instance=ExtResource("6_v1gob")]
 
-[node name="Label" type="Label" parent="."]
-offset_right = 1290.0
-offset_bottom = 734.0
-text = "test"
-label_settings = SubResource("LabelSettings_kln2b")
-script = ExtResource("3_kln2b")
-movementNodePath = NodePath("../Player/Components/Movement")
+[node name="Label" parent="Game UI" index="0"]
+movementNodePath = NodePath("../../Player/Components/Movement")
 
 [editable path="Player"]
 [editable path="Player/Components"]
+[editable path="Game UI"]

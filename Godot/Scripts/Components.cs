@@ -7,6 +7,7 @@ public partial class Components : Node
     public Player Player;
     public Camera Camera;
     public Movement Movement;
+    public GameUI GameUI;
     
     public static Components Instance { get; private set; }
 
