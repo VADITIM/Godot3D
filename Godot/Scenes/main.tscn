@@ -241,8 +241,12 @@ material = SubResource("StandardMaterial3D_pbw6q")
 
 [node name="Game UI" parent="." instance=ExtResource("6_v1gob")]
 
-[node name="Label" parent="Game UI" index="0"]
+[node name="Speed Label" parent="Game UI" index="0"]
 movementNodePath = NodePath("../../Player/Components/Movement")
+
+[node name="State Label" parent="Game UI" index="1"]
+movementNodePath = NodePath("../../Player/Components/Movement")
+wallingNodePath = NodePath("../../Player/Components/WallManager")
 
 [editable path="Player"]
 [editable path="Player/Components"]

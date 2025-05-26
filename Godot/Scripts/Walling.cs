@@ -30,12 +30,30 @@ public partial class Walling : Node
 
 	public void CheckWall()
 	{
-		// var collision = leftWallCollision  && wallTimer.IsStopped() || rightWallCollision && wallTimer.IsStopped();
-		
-		if (!Components.Instance.Movement.isSprinting || Components.Instance.Movement.isGrounded) return;
+		// Only check for walls if sprinting and not grounded, and timer allows detection
+		if (!Components.Instance.Movement.isSprinting || Components.Instance.Movement.isGrounded)
+		{
+			onWall = false;
+			leftWallCollision = false;
+			rightWallCollision = false;
+			return;
+		}
 
-		rightWallCollision = rightWallRayCast.IsColliding() && wallTimer.IsStopped();
-		leftWallCollision = leftWallRayCast.IsColliding() && wallTimer.IsStopped();
+		// Only detect walls if the timer has finished (preventing immediate re-detection after wall jump)
+		if (!wallTimer.IsStopped())
+		{
+			onWall = false;
+			leftWallCollision = false;
+			rightWallCollision = false;
+			return;
+		}
+
+		// Check actual raycast collisions
+		bool rightHit = rightWallRayCast.IsColliding();
+		bool leftHit = leftWallRayCast.IsColliding();
+
+		rightWallCollision = rightHit;
+		leftWallCollision = leftHit;
 
 		if (leftWallCollision || rightWallCollision)
 		{
@@ -47,62 +65,52 @@ public partial class Walling : Node
 			leftWallCollision = false;
 			rightWallCollision = false;
 		}
-
-		if (leftWallCollision)
-		{
-			GD.Print("Left wall collision detected");
-		}
-		else if (rightWallCollision)
-		{
-			GD.Print("Right wall collision detected");
-		}
 	}
 
 	public void HandleWalling()
 	{
 		bool isSprinting = Components.Instance.Movement.isSprinting;
-		
-		// Store original gravity for restoration when not on wall
+
 		float originalGravity = 13.8f;
-		
+
 		if (onWall && isSprinting)
 		{
-			// Zero out vertical velocity and gravity when on wall
 			Components.Instance.Movement.velocity.Y = 0;
 			Components.Instance.Movement.gravity = 0;
 		}
 		else
 		{
-			// Restore normal gravity when not on wall
 			Components.Instance.Movement.gravity = originalGravity;
 		}
 	}
 
 	public void HandleWallJump()
 	{
-		bool collision = leftWallCollision || rightWallCollision;
-
 		if (onWall && Input.IsActionJustPressed("jump"))
 		{
 			wallTimer.Start();
 			isWallJumping = true;
 			onWall = false;
-			
-			// Calculate wall jump direction based on which wall we're on
+
+			bool wasLeftWall = leftWallCollision;
+			bool wasRightWall = rightWallCollision;
+			leftWallCollision = false;
+			rightWallCollision = false;
+
 			Vector3 jumpDirection = Vector3.Zero;
-			if (leftWallCollision)
+			if (wasLeftWall)
 			{
-				jumpDirection = new Vector3(1, 0, 0); // Push right when jumping from left wall
+				jumpDirection = new Vector3(100, 0, 0); 
 			}
-			else if (rightWallCollision)
+			else if (wasRightWall)
 			{
-				jumpDirection = new Vector3(-1, 0, 0); // Push left when jumping from right wall
+				jumpDirection = new Vector3(-1, 0, 0);
 			}
-			
+
 			// Apply wall jump force and restore gravity
 			Components.Instance.Movement.velocity.Y = Components.Instance.Movement.jumpForce;
 			Components.Instance.Movement.gravity = 13.8f;
-			
+
 			// Apply horizontal push based on wall side
 			if (jumpDirection != Vector3.Zero)
 			{
@@ -110,7 +118,7 @@ public partial class Walling : Node
 				jumpDirection = Components.Instance.Player.rb.Transform.Basis * jumpDirection;
 				Components.Instance.Movement.velocity += jumpDirection * 5.0f;
 			}
-			
+
 			WallJumping();
 			GD.Print("Wall Jump");
 		}
