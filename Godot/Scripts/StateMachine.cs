@@ -18,13 +18,10 @@ public partial class StateMachine : Node
         { "Jumping", Colors.LimeGreen },
         { "Falling", Colors.OrangeRed },
         { "Sprinting", Colors.Purple },
-        { "Running", Colors.DeepSkyBlue },
-        { "Walking", Colors.LightBlue },
         { "Moving", Colors.DeepSkyBlue },
-        { "Grounded", Colors.White },
         { "Idle", Colors.LightGray },
-        { "Airborne", Colors.Yellow },
         { "Unknown", Colors.Gray }
+
     }; public event Action<string> StateChanged;
 
     public string CurrentState => currentState;
@@ -62,11 +59,13 @@ public partial class StateMachine : Node
 
     private string DetectCurrentState()
     {
-        if (Components.Instance.WallManager.onWall && Components.Instance.Movement.isSprinting)
-            return "Wall Running";
-
+        bool isMoving = Components.Instance.Movement.direction.LengthSquared() > 0.01f;
+        
         if (Components.Instance.WallManager.isWallJumping)
             return "Wall Jumping";
+
+        if (Components.Instance.WallManager.onWall && Components.Instance.Movement.isSprinting)
+            return "Wall Running";
 
         if (!Components.Instance.Movement.isGrounded)
         {
@@ -78,20 +77,13 @@ public partial class StateMachine : Node
                 return "Airborne";
         }
 
-        bool isMoving = Components.Instance.Movement.direction.LengthSquared() > 0.01f;
-
-        if (!isMoving)
-            return "Idle";
-
         if (Components.Instance.Movement.isSprinting)
             return "Sprinting";
 
-        if (Components.Instance.Movement.currentSpeed > Components.Instance.Movement.maxSpeed * 0.7f)
-            return "Running";
-        else if (Components.Instance.Movement.currentSpeed > 0.1f)
-            return "Walking";
+        if (isMoving)
+            return "Moving";
 
-        return "Grounded";
+        return "Idle";
     }
     private void OnStateChanged(string newState)
     {
@@ -102,10 +94,10 @@ public partial class StateMachine : Node
         StateChanged?.Invoke(newState);
 
         // Update GameUI with state information
-        if (Components.Instance.GameUI != null)
+        if (Components.Instance.UIAnimations != null)
         {
-            Components.Instance.GameUI.UpdatePreviousState(previousState);
-            Components.Instance.GameUI.UpdateCurrentPositions();
+            Components.Instance.UIAnimations.UpdatePreviousState(previousState);
+            Components.Instance.UIAnimations.UpdateCurrentPositions();
         }
 
         TriggerUIAnimation(newState);
@@ -118,20 +110,18 @@ public partial class StateMachine : Node
 
     private void TriggerUIAnimation(string state)
     {
-        if (Components.Instance.GameUI == null) return;
+        if (Components.Instance.UIAnimations == null) return;
 
         switch (state)
         {
-            case "Wall Running": Components.Instance.GameUI.WallRunAnimation(); break;
-            case "Wall Jumping": Components.Instance.GameUI.WallJumpAnimation(); break;
-            case "Jumping": Components.Instance.GameUI.JumpAnimation(); break;
-            case "Falling": Components.Instance.GameUI.FallAnimation(); break;
-            case "Sprinting": Components.Instance.GameUI.SprintAnimation(); break;
-            case "Running": Components.Instance.GameUI.RunAnimation(); break;
-            case "Walking": Components.Instance.GameUI.WalkAnimation(); break;
-            case "Grounded":
-            case "Idle": Components.Instance.GameUI.IdleAnimation(); break;
-            default: Components.Instance.GameUI.ResetToIdle(); break;
+            case "Wall Running": Components.Instance.UIAnimations.WallRunAnimation(); break;
+            case "Wall Jumping": Components.Instance.UIAnimations.WallJumpAnimation(); break;
+            case "Jumping": Components.Instance.UIAnimations.JumpAnimation(); break;
+            case "Falling": Components.Instance.UIAnimations.FallAnimation(); break;
+            case "Sprinting": Components.Instance.UIAnimations.SprintAnimation(); break;
+            case "Moving": Components.Instance.UIAnimations.MoveAnimation(); break;
+            case "Idle": Components.Instance.UIAnimations.IdleAnimation(); break;
+            default: Components.Instance.UIAnimations.ResetToIdle(); break;
         }
     }
 }

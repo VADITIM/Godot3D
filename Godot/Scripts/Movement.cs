@@ -73,7 +73,7 @@ public partial class Movement : Node
         if (isJumpBoosting)
         {
             jumpBoostTimer += delta;
-            
+
             if (jumpBoostTimer <= jumpBoostDuration && isJumping)
             {
                 // Always apply boost for initial duration to ensure consistent jump height
@@ -114,11 +114,11 @@ public partial class Movement : Node
         if (!isGrounded)
         {
             Components.Instance.WallManager.isWallJumping = false;
-            
+
             float gravityMultiplier = 1.0f;
-            
+
             // Apply higher gravity when falling for faster descent
-            if (velocity.Y < 0) 
+            if (velocity.Y < 0)
             {
                 gravityMultiplier = fallingGravityMultiplier;
             }
@@ -127,10 +127,10 @@ public partial class Movement : Node
             {
                 gravityMultiplier = apexGravityMultiplier;
             }
-            
+
             // Apply gravity with appropriate multiplier
             velocity.Y -= gravity * gravityMultiplier * delta;
-            
+
             // Only cut momentum if the player is still in jump boost phase
             // This allows for variable jump height during initial jump only
             if (isJumpBoosting && isJumping && !Input.IsActionPressed("jump") && velocity.Y > 0)
@@ -182,10 +182,10 @@ public partial class Movement : Node
 
         switch (state)
         {
-            case MovementState.Sprinting:   maxSpeed = maxSprintSpeed;  break;
-            case MovementState.Moving:      maxSpeed = this.maxSpeed;   break;
-            case MovementState.WallMoving:  maxSpeed = maxWallSpeed;    break;
-            case MovementState.Airborne:    maxSpeed = 0f;              break;
+            case MovementState.Sprinting: maxSpeed = maxSprintSpeed; break;
+            case MovementState.Moving: maxSpeed = this.maxSpeed; break;
+            case MovementState.WallMoving: maxSpeed = maxWallSpeed; break;
+            case MovementState.Airborne: maxSpeed = 0f; break;
         }
 
         States(delta);
@@ -228,7 +228,7 @@ public partial class Movement : Node
 
         if (state == MovementState.Airborne)
         {
-            GameUI.Instance.MoveLabel();
+            UIAnimations.Instance.MoveLabel();
             if (currentSpeed < 30)
             {
                 airDeceleration = 0.1f;
@@ -243,7 +243,7 @@ public partial class Movement : Node
 
         if (state == MovementState.Falling)
         {
-            GameUI.Instance.BounceLabel();
+            UIAnimations.Instance.BounceLabel();
             if (currentSpeed < 30)
             {
                 airDeceleration = 0.1f;
@@ -258,7 +258,7 @@ public partial class Movement : Node
 
         if (state == MovementState.OnGround)
         {
-            GameUI.Instance.SnapLabel();
+            UIAnimations.Instance.SnapLabel();
 
         }
 

@@ -55,6 +55,9 @@ material = SubResource("StandardMaterial3D_r150o")
 [node name="Player" parent="." instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.6126, 2.58937, 9.17618)
 
+[node name="UIAnimations" parent="Player/Components" index="4" node_paths=PackedStringArray("animatableObjects")]
+animatableObjects = [NodePath("../../../Game UI/State Label"), NodePath("../../../Game UI/Speed Label")]
+
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.10845, 3.06418, 0.575844)
 use_collision = true

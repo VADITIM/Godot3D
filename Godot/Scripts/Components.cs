@@ -3,14 +3,15 @@ using System;
 
 public partial class Components : Node
 {
+    public static Components Instance { get; private set; }
+
     public Walling WallManager;
     public Player Player;
     public Camera Camera;
     public Movement Movement;
-    public GameUI GameUI;
     public StateMachine StateMachine;
-
-    public static Components Instance { get; private set; }
+    public GameUI GameUI;
+    public UIAnimations UIAnimations;
 
     public override void _Ready()
     {
@@ -23,5 +24,6 @@ public partial class Components : Node
         StateMachine = GetNode<StateMachine>("/root/Main/Player/Components/StateMachine");
 
         GameUI = GetNode<GameUI>("/root/Main/Game UI");
+        UIAnimations = GetNode<UIAnimations>("/root/Main/Game UI/UIAnimations");
     }
 }

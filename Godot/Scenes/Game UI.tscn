@@ -1,13 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://cex06vcc12y80"]
+[gd_scene load_steps=6 format=3 uid="uid://cex06vcc12y80"]
 
 [ext_resource type="Script" uid="uid://4pakvi4e546j" path="res://Scripts/UI/GameUI.cs" id="1_58ppc"]
 [ext_resource type="Script" uid="uid://cth88od8svf8y" path="res://Scripts/UI/SpeedDisplay.cs" id="1_j13iv"]
+[ext_resource type="Script" uid="uid://cnsr56x3565tr" path="res://Scripts/UI/UIAnimations.cs" id="2_0hk2f"]
 [ext_resource type="Script" uid="uid://bwa3akbskft8m" path="res://Scripts/UI/StateDisplay.cs" id="3_wmu2t"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_58ppc"]
 font_size = 30
 
-[node name="Game UI" type="Control" node_paths=PackedStringArray("animatableObjects")]
+[node name="Game UI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,7 +19,10 @@ pivot_offset = Vector2(640, 360)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_58ppc")
-animatableObjects = [NodePath("Speed Label"), NodePath("State Label")]
+
+[node name="UIAnimations" type="Node" parent="." node_paths=PackedStringArray("animatableObjects")]
+script = ExtResource("2_0hk2f")
+animatableObjects = [NodePath("../Speed Label"), NodePath("../State Label")]
 
 [node name="Speed Label" type="Label" parent="."]
 layout_mode = 0
