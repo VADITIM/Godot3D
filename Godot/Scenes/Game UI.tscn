@@ -1,12 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://cex06vcc12y80"]
+[gd_scene load_steps=8 format=3 uid="uid://cex06vcc12y80"]
 
 [ext_resource type="Script" uid="uid://4pakvi4e546j" path="res://Scripts/UI/GameUI.cs" id="1_58ppc"]
 [ext_resource type="Script" uid="uid://cth88od8svf8y" path="res://Scripts/UI/SpeedDisplay.cs" id="1_j13iv"]
 [ext_resource type="Script" uid="uid://cnsr56x3565tr" path="res://Scripts/UI/UIAnimations.cs" id="2_0hk2f"]
+[ext_resource type="FontFile" uid="uid://yjjh8gq82fe7" path="res://Assets/Fonts/Shownan.ttf" id="3_6iude"]
 [ext_resource type="Script" uid="uid://bwa3akbskft8m" path="res://Scripts/UI/StateDisplay.cs" id="3_wmu2t"]
+[ext_resource type="Texture2D" uid="uid://b0haam7y65snk" path="res://icon.svg" id="6_qe4kh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_58ppc"]
-font_size = 30
+font = ExtResource("3_6iude")
+font_size = 46
+shadow_size = 7
+shadow_color = Color(0, 0, 0, 0.34902)
+shadow_offset = Vector2(5, 5)
 
 [node name="Game UI" type="Control"]
 layout_mode = 3
@@ -22,7 +28,7 @@ script = ExtResource("1_58ppc")
 
 [node name="UIAnimations" type="Node" parent="." node_paths=PackedStringArray("animatableObjects")]
 script = ExtResource("2_0hk2f")
-animatableObjects = [NodePath("../Speed Label"), NodePath("../State Label")]
+animatableObjects = [NodePath("../Speed Label"), NodePath("../State Label"), NodePath("../Panel"), NodePath("../Panel2"), NodePath("../TextureRect")]
 
 [node name="Speed Label" type="Label" parent="."]
 layout_mode = 0
@@ -55,3 +61,31 @@ label_settings = SubResource("LabelSettings_58ppc")
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("3_wmu2t")
+
+[node name="Panel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+offset_left = 1241.0
+offset_top = 340.0
+offset_right = 1245.0
+offset_bottom = 419.0
+scale = Vector2(5.09, 5.09)
+pivot_offset = Vector2(2, 39.5)
+
+[node name="Panel2" type="Panel" parent="."]
+visible = false
+offset_left = 35.0
+offset_top = 337.0
+offset_right = 39.0
+offset_bottom = 416.0
+scale = Vector2(5.09, 5.09)
+pivot_offset = Vector2(2, 39.5)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 1084.0
+offset_top = 567.0
+offset_right = 1212.0
+offset_bottom = 695.0
+pivot_offset = Vector2(64, 64)
+texture = ExtResource("6_qe4kh")

@@ -1,10 +1,10 @@
 [gd_scene load_steps=14 format=3 uid="uid://c25rx1plwdeb7"]
 
-[ext_resource type="Texture2D" uid="uid://lb04gh2uw2ch" path="res://textures/stone-wall_BaseColor.png" id="1_jw32o"]
+[ext_resource type="Texture2D" uid="uid://lb04gh2uw2ch" path="res://Assets/textures/stone-wall_BaseColor.png" id="1_jw32o"]
 [ext_resource type="PackedScene" uid="uid://b6gpic6yympc4" path="res://Scenes/Player.tscn" id="1_r150o"]
-[ext_resource type="Texture2D" uid="uid://ct8qaprv6gf8s" path="res://textures/stone-wall_Ao.png" id="2_50glp"]
-[ext_resource type="Texture2D" uid="uid://bjky5hd8yfqo5" path="res://textures/stone-wall_Normal.png" id="3_vy5pj"]
-[ext_resource type="Texture2D" uid="uid://0ji65fde3abv" path="res://textures/stone-wall_Roughness.png" id="4_bmxlf"]
+[ext_resource type="Texture2D" uid="uid://ct8qaprv6gf8s" path="res://Assets/textures/stone-wall_Ao.png" id="2_50glp"]
+[ext_resource type="Texture2D" uid="uid://bjky5hd8yfqo5" path="res://Assets/textures/stone-wall_Normal.png" id="3_vy5pj"]
+[ext_resource type="Texture2D" uid="uid://0ji65fde3abv" path="res://Assets/textures/stone-wall_Roughness.png" id="4_bmxlf"]
 [ext_resource type="PackedScene" uid="uid://cex06vcc12y80" path="res://Scenes/Game UI.tscn" id="6_v1gob"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jjgbg"]
@@ -54,9 +54,6 @@ material = SubResource("StandardMaterial3D_r150o")
 
 [node name="Player" parent="." instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.6126, 2.58937, 9.17618)
-
-[node name="UIAnimations" parent="Player/Components" index="4" node_paths=PackedStringArray("animatableObjects")]
-animatableObjects = [NodePath("../../../Game UI/State Label"), NodePath("../../../Game UI/Speed Label")]
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.10845, 3.06418, 0.575844)
@@ -244,7 +241,7 @@ material = SubResource("StandardMaterial3D_pbw6q")
 
 [node name="Game UI" parent="." instance=ExtResource("6_v1gob")]
 
-[node name="Speed Label" parent="Game UI" index="0"]
+[node name="Speed Label" parent="Game UI" index="1"]
 movementNodePath = NodePath("../../Player/Components/Movement")
 
 [editable path="Player"]

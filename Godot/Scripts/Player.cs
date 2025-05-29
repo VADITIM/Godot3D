@@ -12,9 +12,9 @@ public partial class Player : CharacterBody3D
     public override void _PhysicsProcess(double delta)
     {
         Components.Instance.Movement.HandleMovement((float)delta);
-        Components.Instance.WallManager.HandleWallJump();
-        Components.Instance.WallManager.CheckWall();
-        Components.Instance.WallManager.HandleWalling();
+        Components.Instance.WallManager.CheckWall(); // Check wall state first
+        Components.Instance.WallManager.HandleWallJump(); // Then handle wall jump (which can modify wall state)
+        Components.Instance.WallManager.HandleWalling(); // Finally apply walling effects
     }
     
     public override void _Process(double delta)
