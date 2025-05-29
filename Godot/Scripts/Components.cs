@@ -8,7 +8,8 @@ public partial class Components : Node
     public Camera Camera;
     public Movement Movement;
     public GameUI GameUI;
-    
+    public StateMachine StateMachine;
+
     public static Components Instance { get; private set; }
 
     public override void _Ready()
@@ -19,5 +20,8 @@ public partial class Components : Node
         WallManager = GetNode<Walling>("/root/Main/Player/Components/WallManager");
         Camera = GetNode<Camera>("/root/Main/Player/Components/Camera");
         Movement = GetNode<Movement>("/root/Main/Player/Components/Movement");
+        StateMachine = GetNode<StateMachine>("/root/Main/Player/Components/StateMachine");
+
+        GameUI = GetNode<GameUI>("/root/Main/Game UI");
     }
 }

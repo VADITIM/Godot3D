@@ -30,6 +30,7 @@ pivot_offset = Vector2(200, 21)
 text = "speed: "
 label_settings = SubResource("LabelSettings_58ppc")
 script = ExtResource("1_j13iv")
+prefix = ""
 
 [node name="State Label" type="Label" parent="."]
 layout_mode = 1
@@ -50,4 +51,3 @@ label_settings = SubResource("LabelSettings_58ppc")
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("3_wmu2t")
-prefix = "Speed: "

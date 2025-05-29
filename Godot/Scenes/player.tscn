@@ -19,6 +19,15 @@ ease = 2
 script = ExtResource("1_v0iea")
 rb = NodePath(".")
 
+[node name="Components" parent="." instance=ExtResource("2_cvnsp")]
+
+[node name="WallManager" parent="Components" index="0" node_paths=PackedStringArray("leftWallRayCast", "rightWallRayCast")]
+leftWallRayCast = NodePath("../../Raycasts/WallRaycastLeft")
+rightWallRayCast = NodePath("../../Raycasts/WallRaycastRight")
+
+[node name="Camera" parent="Components" index="1" node_paths=PackedStringArray("playerCamera")]
+playerCamera = NodePath("../../Camera")
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_cvnsp")
 
@@ -27,6 +36,11 @@ shape = SubResource("CapsuleShape3D_6t5aa")
 
 [node name="Camera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.500529, 0)
+
+[node name="PhantomCamera3D" type="Node3D" parent="."]
+script = ExtResource("3_dewec")
+tween_resource = SubResource("Resource_nn08x")
+metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
 [node name="Raycasts" type="Node3D" parent="."]
 
@@ -37,19 +51,5 @@ debug_shape_thickness = 5
 [node name="WallRaycastLeft" type="RayCast3D" parent="Raycasts"]
 target_position = Vector3(-0.7, 0, 0)
 debug_shape_thickness = 5
-
-[node name="Components" parent="." instance=ExtResource("2_cvnsp")]
-
-[node name="WallManager" parent="Components" index="0" node_paths=PackedStringArray("leftWallRayCast", "rightWallRayCast")]
-leftWallRayCast = NodePath("../../Raycasts/WallRaycastLeft")
-rightWallRayCast = NodePath("../../Raycasts/WallRaycastRight")
-
-[node name="Camera" parent="Components" index="1" node_paths=PackedStringArray("playerCamera")]
-playerCamera = NodePath("../../Camera")
-
-[node name="PhantomCamera3D" type="Node3D" parent="."]
-script = ExtResource("3_dewec")
-tween_resource = SubResource("Resource_nn08x")
-metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
 [editable path="Components"]

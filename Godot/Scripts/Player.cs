@@ -16,7 +16,7 @@ public partial class Player : CharacterBody3D
         Components.Instance.WallManager.CheckWall();
         Components.Instance.WallManager.HandleWalling();
     }
-
+    
     public override void _Process(double delta)
     {
         Components.Instance.Movement.HandleGravity((float)delta);

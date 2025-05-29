@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://mkag7wgy2fpm"]
+[gd_scene load_steps=6 format=3 uid="uid://mkag7wgy2fpm"]
 
 [ext_resource type="Script" uid="uid://c3dq2ex33iucc" path="res://Scripts/Components.cs" id="1_fm4tj"]
 [ext_resource type="Script" uid="uid://r54lv0ixd2lr" path="res://Scripts/Walling.cs" id="2_6b81e"]
 [ext_resource type="Script" uid="uid://dmtfmxgv6dw8v" path="res://Scripts/Camera.cs" id="3_pkomj"]
 [ext_resource type="Script" uid="uid://clsv5pv3pu4rd" path="res://Scripts/Movement.cs" id="4_eyuts"]
+[ext_resource type="Script" uid="uid://kxysfmxqtjfv" path="res://Scripts/StateMachine.cs" id="6_pkomj"]
 
 [node name="Components" type="Node"]
 script = ExtResource("1_fm4tj")
@@ -16,3 +17,6 @@ script = ExtResource("3_pkomj")
 
 [node name="Movement" type="Node" parent="."]
 script = ExtResource("4_eyuts")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("6_pkomj")

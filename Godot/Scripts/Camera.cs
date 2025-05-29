@@ -4,9 +4,8 @@ public partial class Camera : Node
 {
     [Export] private Camera3D playerCamera;
     [Export] private float mouseSensitivity = 0.002f;
-    
-    private float cameraXRotation = 0f;
 
+    private float cameraXRotation = 0f;
     public override void _Input(InputEvent @event)
     {
         if (@event is InputEventMouseMotion mouseMotion && Input.MouseMode == Input.MouseModeEnum.Captured)
@@ -19,7 +18,7 @@ public partial class Camera : Node
             MouseCapture();
         }
     }
-    
+
     private void MouseCapture()
     {
         if (Input.MouseMode == Input.MouseModeEnum.Captured)
@@ -27,7 +26,7 @@ public partial class Camera : Node
         else
             Input.MouseMode = Input.MouseModeEnum.Captured;
     }
-    
+
     private void HandleMouseLook(InputEventMouseMotion mouseMotion)
     {
         cameraXRotation -= mouseMotion.Relative.Y * mouseSensitivity;
