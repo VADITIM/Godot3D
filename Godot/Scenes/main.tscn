@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c25rx1plwdeb7"]
+[gd_scene load_steps=17 format=3 uid="uid://c25rx1plwdeb7"]
 
 [ext_resource type="Texture2D" uid="uid://lb04gh2uw2ch" path="res://Assets/textures/stone-wall_BaseColor.png" id="1_jw32o"]
 [ext_resource type="PackedScene" uid="uid://b6gpic6yympc4" path="res://Scenes/Player.tscn" id="1_r150o"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bjky5hd8yfqo5" path="res://Assets/textures/stone-wall_Normal.png" id="3_vy5pj"]
 [ext_resource type="Texture2D" uid="uid://0ji65fde3abv" path="res://Assets/textures/stone-wall_Roughness.png" id="4_bmxlf"]
 [ext_resource type="PackedScene" uid="uid://cex06vcc12y80" path="res://Scenes/Game UI.tscn" id="6_v1gob"]
+[ext_resource type="Shader" uid="uid://bm4gnd4i8q8oe" path="res://Scenes/Main.gdshader" id="7_jw32o"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jjgbg"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -31,11 +32,19 @@ ao_texture = ExtResource("2_50glp")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kln2b"]
 albedo_color = Color(1, 0.027451, 0, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rgh2o"]
-albedo_color = Color(0.909804, 0.87451, 0, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jw32o"]
+render_priority = 0
+shader = ExtResource("7_jw32o")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pbw6q"]
 albedo_color = Color(0, 0.584314, 0.992157, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rgh2o"]
+albedo_color = Color(0.909804, 0.87451, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_50glp"]
+render_priority = 0
+shader = ExtResource("7_jw32o")
 
 [node name="Main" type="Node3D"]
 
@@ -67,7 +76,7 @@ material = SubResource("StandardMaterial3D_kln2b")
 [node name="CSGBox3D24" type="CSGBox3D" parent="CSGCombiner3D"]
 transform = Transform3D(-1.4953e-07, 0, 1, 0, 2.63687, 0, -3.42084, 0, -4.37114e-08, -3.26075, 3.50166, 32.7207)
 size = Vector3(12.2411, 5.646, 1)
-material = SubResource("StandardMaterial3D_rgh2o")
+material = SubResource("ShaderMaterial_jw32o")
 
 [node name="CSGBox3D25" type="CSGBox3D" parent="CSGCombiner3D"]
 transform = Transform3D(-1.4953e-07, 0, 1, 0, 2.63687, 0, -3.42084, 0, -4.37114e-08, -3.26075, 3.50166, 73.7708)
@@ -244,12 +253,17 @@ material = SubResource("StandardMaterial3D_pbw6q")
 [node name="Speed Label" parent="Game UI" index="1"]
 movementNodePath = NodePath("../../Player/Components/Movement")
 
-[node name="Points Label" parent="Game UI" index="3"]
-layout_mode = 0
-offset_left = 0.0
-offset_top = 113.0
-offset_right = 376.0
-offset_bottom = 166.0
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.327, 11.082, -0.903)
+radius = 6.3951
+material = SubResource("ShaderMaterial_50glp")
+metadata/_edit_lock_ = true
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.1305, 7.652, 35.6075)
+light_energy = 10.0
+light_size = 5.0
+omni_range = 21.5124
 
 [editable path="Player"]
 [editable path="Player/Components"]

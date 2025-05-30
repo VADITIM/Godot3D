@@ -48,6 +48,7 @@ label_settings = SubResource("LabelSettings_58ppc")
 vertical_alignment = 1
 script = ExtResource("1_j13iv")
 prefix = ""
+suffix = "m/s"
 
 [node name="State Label" type="Label" parent="."]
 layout_mode = 1

@@ -115,8 +115,6 @@ public partial class Walling : Node
 			rightWallCollision = newRightWallCollision;
 			leftWallCollision = newLeftWallCollision;
 		}
-
-		DebugWallState();
 	}
 
 	public void HandleWalling()
@@ -182,7 +180,6 @@ public partial class Walling : Node
 			}
 
 			WallJumping();
-			GD.Print("Wall Jump");
 		}
 	}
 
@@ -197,20 +194,7 @@ public partial class Walling : Node
 			Components.Instance.Movement.currentSpeed += currentSpeed / 10;
 	}
 
-	private void DebugWallState()
-	{
-		if (onWall != previousOnWall)
-		{
-			bool leftHit = leftWallRayCast?.IsColliding() ?? false;
-			bool rightHit = rightWallRayCast?.IsColliding() ?? false;
-			Vector3 velocity = Components.Instance.Movement.velocity;
 
-			GD.Print($"Wall state changed: onWall={onWall}, LeftRaycast={leftHit}, RightRaycast={rightHit}, Timer stopped={wallTimer.IsStopped()}, Velocity=({velocity.X:F2}, {velocity.Y:F2}, {velocity.Z:F2})");
-			previousOnWall = onWall;
-		}
-	}
-
-	// Method to force reset wall state - useful for debugging or emergency situations
 	public void ForceResetWallState()
 	{
 		onWall = false;
@@ -218,6 +202,5 @@ public partial class Walling : Node
 		rightWallCollision = false;
 		isWallJumping = false;
 		wallStateChangeTimer = 0.0f;
-		GD.Print("Wall state force reset!");
 	}
 }

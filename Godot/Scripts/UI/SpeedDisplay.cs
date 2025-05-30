@@ -28,12 +28,6 @@ public partial class SpeedDisplay : Label
         {
             movementComponent = Components.Instance.Player.GetNodeOrNull<Movement>("Movement");
         }
-        
-        if (movementComponent == null)
-        {
-            Text = "Movement component not found!";
-            GD.PrintErr("SpeedDisplay: Movement component not found!");
-        }
     }
 
     public override void _Process(double delta)
