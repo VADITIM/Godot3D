@@ -170,7 +170,7 @@ public partial class Walling : Node
 			}
 
 			// Apply wall jump force and restore gravity
-			Components.Instance.Movement.velocity.Y = Components.Instance.Movement.jumpForce;
+			Components.Instance.Movement.velocity.Y = Components.Instance.Movement.jumpForce * 2;
 			Components.Instance.Movement.gravity = 13.8f;
 
 			// Apply horizontal push based on wall side

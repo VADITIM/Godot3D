@@ -10,6 +10,8 @@ public partial class StateMachine : Node
 
     private string currentState = "";
     private string previousState = "";
+    private bool isTransitioningFromJumpToFall = false;
+    private bool isTransitioningFromFallToGround = false;
 
     // Movement state enum for internal logic
     private enum MovementState
@@ -79,6 +81,9 @@ public partial class StateMachine : Node
         if (Components.Instance.WallManager.isWallJumping && Components.Instance.Movement.velocity.Y > 0)
             return "Wall Jumping";
 
+        if (Components.Instance.Movement.isWallJumping && !Components.Instance.Movement.isGrounded)
+            return "Wall Jumping";
+
         if (Components.Instance.WallManager.onWall && Components.Instance.Movement.isSprinting && !Components.Instance.Movement.isGrounded)
             return "Wall Running";
 
@@ -91,7 +96,7 @@ public partial class StateMachine : Node
             else if (Components.Instance.Movement.velocity.Y < 0)
                 return "Falling";
             else
-                return "Airborne";
+                return "Jumping";
         }
 
         if (Components.Instance.Movement.isSprinting)
@@ -253,6 +258,10 @@ public partial class StateMachine : Node
     {
         if (currentState == newState) return;
 
+        // Track specific transitions
+        isTransitioningFromJumpToFall = (currentState == "Jumping" || currentState == "Airborne") && newState == "Falling";
+        isTransitioningFromFallToGround = currentState == "Falling" && (newState == "Idle" || newState == "Moving" || newState == "Sprinting");
+
         previousState = currentState;
         currentState = newState;
         StateChanged?.Invoke(newState);
@@ -285,21 +294,49 @@ public partial class StateMachine : Node
             _ => "Idle"
         };
     }
-
     private void TriggerUIAnimation(string state)
     {
         if (Components.Instance.UIAnimations == null) return;
 
-        switch (state)
+        // Handle state continuity for falling to grounded transitions
+        if (isTransitioningFromFallToGround && (state == "Idle" || state == "Moving" || state == "Sprinting"))
         {
-            case "Wall Running": Components.Instance.UIAnimations.WallRunAnimation(); break;
-            case "Wall Jumping": Components.Instance.UIAnimations.WallJumpAnimation(); break;
-            case "Jumping": Components.Instance.UIAnimations.JumpAnimation(); break;
-            case "Falling": Components.Instance.UIAnimations.FallAnimation(); break;
-            case "Sprinting": Components.Instance.UIAnimations.SprintAnimation(); break;
-            case "Moving": Components.Instance.UIAnimations.MoveAnimation(); break;
-            case "Idle": Components.Instance.UIAnimations.IdleAnimation(); break;
-            default: Components.Instance.UIAnimations.ResetToIdle(); break;
+            // Trigger bounce-back animation and let it handle the subsequent state animation
+            Components.Instance.UIAnimations.ElasticAnimation(state);
         }
+        else
+        {
+            switch (state)
+            {
+                case "Wall Running":
+                    Components.Instance.UIAnimations.WallRunAnimation();
+                    break;
+                case "Wall Jumping":
+                    Components.Instance.UIAnimations.WallJumpAnimation();
+                    break;
+                case "Jumping":
+                    Components.Instance.UIAnimations.JumpAnimation();
+                    break;
+                case "Falling":
+                    Components.Instance.UIAnimations.FallAnimation();
+                    break;
+                case "Sprinting":
+                    Components.Instance.UIAnimations.SprintAnimation();
+                    break;
+                case "Moving":
+                    Components.Instance.UIAnimations.MoveAnimation();
+                    break;
+                case "Idle":
+                    Components.Instance.UIAnimations.IdleAnimation();
+                    break;
+                default:
+                    Components.Instance.UIAnimations.ResetToIdle();
+                    break;
+            }
+        }
+
+        // Reset transition flags after triggering animation
+        isTransitioningFromJumpToFall = false;
+        isTransitioningFromFallToGround = false;
     }
 }

@@ -244,6 +244,13 @@ material = SubResource("StandardMaterial3D_pbw6q")
 [node name="Speed Label" parent="Game UI" index="1"]
 movementNodePath = NodePath("../../Player/Components/Movement")
 
+[node name="Points Label" parent="Game UI" index="3"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 113.0
+offset_right = 376.0
+offset_bottom = 166.0
+
 [editable path="Player"]
 [editable path="Player/Components"]
 [editable path="Game UI"]

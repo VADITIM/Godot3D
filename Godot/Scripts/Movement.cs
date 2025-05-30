@@ -17,9 +17,9 @@ public partial class Movement : Node
     [Export] public float speedExcessDeceleration = 4.5f;
     [Export] public float airDeceleration = .55f;
 
-    [Export] public float jumpForce = 4.5f;
+    [Export] public float jumpForce = 5f;
     [Export] public float jumpBoostDuration = 0.1f; // Duration of initial jump boost
-    [Export] public float jumpBoostMultiplier = 1.2f; // Multiplier for jump boost
+    [Export] public float jumpBoostMultiplier = 1.5f; // Multiplier for jump boost
 
     public float gravity = 13.8f;
     [Export] public float fallingGravityMultiplier = 1.4f; // Gravity multiplier when falling
