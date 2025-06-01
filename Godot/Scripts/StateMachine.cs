@@ -13,8 +13,20 @@ public partial class StateMachine : Node
     private bool isTransitioningFromJumpToFall = false;
     private bool isTransitioningFromFallToGround = false;
 
-    // Movement state enum for internal logic
-    private enum MovementState
+    public event Action<string> StateChanged;
+
+    private bool jumping;
+    private bool falling;
+    private bool moving;
+    private bool sprinting;
+    private bool grounded;
+    private bool onWall;
+    private bool wallJump;
+    private float velocityY;
+    private float currentSpeed;
+    private Vector3 direction;
+
+    private enum State
     {
         Idle,
         Moving,
@@ -26,7 +38,6 @@ public partial class StateMachine : Node
         OnGround
     }
 
-    // State colors for UI
     public readonly Dictionary<string, Color> StateColors = new Dictionary<string, Color>
     {
         { "Wall Running", Colors.Cyan },
@@ -40,7 +51,6 @@ public partial class StateMachine : Node
         { "Unknown", Colors.Gray }
     };
 
-    public event Action<string> StateChanged;
 
     public string CurrentState => currentState;
     public string PreviousState => previousState;
@@ -62,8 +72,23 @@ public partial class StateMachine : Node
         if (stateUpdateTimer >= stateUpdateInterval)
         {
             stateUpdateTimer = 0;
+            UpdatePrivateBools();
             UpdateCurrentState();
         }
+    }
+
+    private void UpdatePrivateBools()
+    {
+        jumping = Components.Instance.Movement.isJumping;
+        falling = Components.Instance.Movement.velocity.Y < 0;
+        moving = Components.Instance.Movement.isMoving;
+        sprinting = Components.Instance.Movement.isSprinting;
+        grounded = Components.Instance.Movement.isGrounded;
+        onWall = Components.Instance.WallManager.onWall;
+        wallJump = Components.Instance.WallManager.isWallJumping;
+        velocityY = Components.Instance.Movement.velocity.Y;
+        currentSpeed = Components.Instance.Movement.currentSpeed;
+        direction = Components.Instance.Movement.direction;
     }
 
     private void UpdateCurrentState()
@@ -76,98 +101,91 @@ public partial class StateMachine : Node
     }
     private string DetectCurrentState()
     {
-        bool isMoving = Components.Instance.Movement.isMoving;
-
-        if (Components.Instance.WallManager.isWallJumping && Components.Instance.Movement.velocity.Y > 0)
+        if (wallJump && velocityY > 0 && !grounded)
             return "Wall Jumping";
 
-        if (Components.Instance.Movement.isWallJumping && !Components.Instance.Movement.isGrounded)
-            return "Wall Jumping";
-
-        if (Components.Instance.WallManager.onWall && Components.Instance.Movement.isSprinting && !Components.Instance.Movement.isGrounded)
+        if (onWall && sprinting && !grounded)
             return "Wall Running";
 
-        if (!Components.Instance.Movement.isGrounded)
+        if (!grounded)
         {
-            if (Components.Instance.WallManager.onWall && Input.IsActionJustPressed("jump"))
+            if (onWall && Input.IsActionJustPressed("jump"))
                 return "Wall Jumping";
-            else if (Components.Instance.Movement.isJumping && Components.Instance.Movement.velocity.Y > 0)
+            else if (jumping && velocityY > 0)
                 return "Jumping";
-            else if (Components.Instance.Movement.velocity.Y < 0)
+            else if (velocityY < 0)
                 return "Falling";
             else
                 return "Jumping";
         }
 
-        if (Components.Instance.Movement.isSprinting)
+        if (sprinting)
             return "Sprinting";
 
-        if (isMoving)
+        if (moving)
             return "Moving";
         else
             return "Idle";
     }
 
-    // Movement state logic - moved from Movement.cs
-    private MovementState GetMovementState(Vector3 direction)
+    private State GetMovementState(Vector3 direction)
     {
         bool isMoving = direction.LengthSquared() > 0.01f;
 
-        if (Components.Instance.WallManager.onWall && Components.Instance.Movement.isSprinting && !Components.Instance.Movement.isGrounded)
-            return MovementState.WallMoving;
+        if (onWall && sprinting && !grounded)
+            return State.WallMoving;
 
-        if (Components.Instance.WallManager.onWall && Input.IsActionJustPressed("jump") && !Components.Instance.Movement.isGrounded)
-            return MovementState.WallJumping;
+        if (onWall && Input.IsActionJustPressed("jump") && !grounded)
+            return State.WallJumping;
 
-        if (isMoving && Components.Instance.Movement.isSprinting && Components.Instance.Movement.isGrounded)
-            return MovementState.Sprinting;
+        if (isMoving && sprinting && grounded)
+            return State.Sprinting;
 
-        if (isMoving && Components.Instance.Movement.isGrounded)
-            return MovementState.Moving;
+        if (isMoving && grounded)
+            return State.Moving;
 
-        if (!Components.Instance.Movement.isGrounded && Components.Instance.Movement.velocity.Y > 0)
-            return MovementState.Airborne;
+        if (!grounded && velocityY > 0)
+            return State.Airborne;
 
-        if (!Components.Instance.Movement.isGrounded && Components.Instance.Movement.velocity.Y < 0)
-            return MovementState.Falling;
+        if (!grounded && velocityY < 0)
+            return State.Falling;
 
-        if (Components.Instance.Movement.isGrounded)
-            return MovementState.OnGround;
+        if (grounded)
+            return State.OnGround;
 
-        return MovementState.Idle;
+        return State.Idle;
     }
 
-    // Movement acceleration logic - moved from Movement.cs
     public void HandleAcceleration(Vector3 direction, float delta, bool justLanded = false)
     {
-        MovementState state = GetMovementState(direction);
+        State state = GetMovementState(direction);
         bool isMoving = direction.LengthSquared() > 0.01f;
         float maxSpeed = 0f;
 
         switch (state)
         {
-            case MovementState.Sprinting: maxSpeed = Components.Instance.Movement.maxSprintSpeed; break;
-            case MovementState.Moving: maxSpeed = Components.Instance.Movement.maxSpeed; break;
-            case MovementState.WallMoving: maxSpeed = Components.Instance.Movement.maxWallSpeed; break;
-            case MovementState.Airborne: maxSpeed = 0f; break;
+            case State.Sprinting: maxSpeed = Components.Instance.Movement.maxSprintSpeed; break;
+            case State.Moving: maxSpeed = Components.Instance.Movement.maxSpeed; break;
+            case State.WallMoving: maxSpeed = Components.Instance.Movement.maxWallSpeed; break;
+            case State.Airborne: maxSpeed = 0f; break;
         }
 
-        ProcessMovementStates(delta);
+        ProcessStates(delta);
 
         if (isMoving)
         {
-            float accelRate = Components.Instance.Movement.isGrounded ?
+            float accelRate = grounded ?
                 Components.Instance.Movement.groundAcceleration :
-                (Components.Instance.WallManager.onWall ?
+                (onWall ?
                     Components.Instance.Movement.wallAcceleration :
                     Components.Instance.Movement.airAcceleration);
 
-            if (Components.Instance.Movement.currentSpeed < maxSpeed)
+            if (currentSpeed < maxSpeed)
             {
                 Components.Instance.Movement.currentSpeed += accelRate * delta * 10;
                 Components.Instance.Movement.currentSpeed = Mathf.Min(Components.Instance.Movement.currentSpeed, maxSpeed);
             }
-            else if (Components.Instance.Movement.isGrounded && Components.Instance.Movement.currentSpeed > maxSpeed)
+            else if (grounded && currentSpeed > maxSpeed)
             {
                 Components.Instance.Movement.currentSpeed = Mathf.MoveToward(
                     Components.Instance.Movement.currentSpeed,
@@ -177,7 +195,7 @@ public partial class StateMachine : Node
         }
         else
         {
-            if (Components.Instance.Movement.isGrounded)
+            if (grounded)
             {
                 Components.Instance.Movement.currentSpeed = Mathf.MoveToward(
                     Components.Instance.Movement.currentSpeed,
@@ -190,24 +208,20 @@ public partial class StateMachine : Node
     }
 
     // Movement states processing - moved from Movement.cs
-    public void ProcessMovementStates(float delta)
+    public void ProcessStates(float delta)
     {
-        MovementState state = GetMovementState(Components.Instance.Movement.direction);
+        State state = GetMovementState(direction);
 
-        if (state == MovementState.WallMoving)
+        if (state == State.WallMoving)
         {
             Components.Instance.Movement.currentSpeed = Mathf.MoveToward(
                 Components.Instance.Movement.currentSpeed,
                 Components.Instance.Movement.maxWallSpeed,
                 Components.Instance.Movement.wallAcceleration * delta * 10);
         }
-
-        if (state == MovementState.Airborne)
+        if (state == State.Airborne)
         {
-            if (Components.Instance.UIAnimations != null)
-                Components.Instance.UIAnimations.MoveLabel();
-
-            if (Components.Instance.Movement.currentSpeed < 30)
+            if (currentSpeed < 30)
             {
                 Components.Instance.Movement.airDeceleration = 0.1f;
                 Components.Instance.Movement.currentSpeed = Mathf.MoveToward(
@@ -225,12 +239,9 @@ public partial class StateMachine : Node
             }
         }
 
-        if (state == MovementState.Falling)
+        if (state == State.Falling)
         {
-            if (Components.Instance.UIAnimations != null)
-                Components.Instance.UIAnimations.BounceLabel();
-
-            if (Components.Instance.Movement.currentSpeed < 30)
+            if (currentSpeed < 30)
             {
                 Components.Instance.Movement.airDeceleration = 0.1f;
                 Components.Instance.Movement.currentSpeed = Mathf.MoveToward(
@@ -246,19 +257,12 @@ public partial class StateMachine : Node
                     0,
                     Components.Instance.Movement.airDeceleration * delta * 10);
             }
-        }
-
-        if (state == MovementState.OnGround)
-        {
-            if (Components.Instance.UIAnimations != null)
-                Components.Instance.UIAnimations.SnapLabel();
         }
     }
     private void OnStateChanged(string newState)
     {
         if (currentState == newState) return;
 
-        // Track specific transitions
         isTransitioningFromJumpToFall = (currentState == "Jumping" || currentState == "Airborne") && newState == "Falling";
         isTransitioningFromFallToGround = currentState == "Falling" && (newState == "Idle" || newState == "Moving" || newState == "Sprinting");
 
@@ -279,29 +283,27 @@ public partial class StateMachine : Node
 
     public string GetCurrentMovementState()
     {
-        Vector3 direction = Components.Instance.Movement.direction;
-        MovementState state = GetMovementState(direction);
+        State state = GetMovementState(direction);
 
         return state switch
         {
-            MovementState.WallMoving => "Wall Running",
-            MovementState.WallJumping => "Wall Jumping",
-            MovementState.Sprinting => "Sprinting",
-            MovementState.Moving => "Moving",
-            MovementState.Airborne => "Airborne",
-            MovementState.Falling => "Falling",
-            MovementState.OnGround => "Idle",
+            State.WallMoving => "Wall Running",
+            State.WallJumping => "Wall Jumping",
+            State.Sprinting => "Sprinting",
+            State.Moving => "Moving",
+            State.Airborne => "Airborne",
+            State.Falling => "Falling",
+            State.OnGround => "Idle",
             _ => "Idle"
         };
     }
+
     private void TriggerUIAnimation(string state)
     {
         if (Components.Instance.UIAnimations == null) return;
 
-        // Handle state continuity for falling to grounded transitions
         if (isTransitioningFromFallToGround && (state == "Idle" || state == "Moving" || state == "Sprinting"))
         {
-            // Trigger bounce-back animation and let it handle the subsequent state animation
             Components.Instance.UIAnimations.ElasticAnimation(state);
         }
         else
@@ -335,7 +337,6 @@ public partial class StateMachine : Node
             }
         }
 
-        // Reset transition flags after triggering animation
         isTransitioningFromJumpToFall = false;
         isTransitioningFromFallToGround = false;
     }

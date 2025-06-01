@@ -76,6 +76,8 @@ public partial class UIAnimations : Node
             positionTween.TweenProperty(animatableObjects[i], "position", targetPositions[i], transitionSpeed)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Cubic);
 
+            PopUp();
+
             if (i == 0)
                 positionTween.TweenCallback(Callable.From(StartWallRunVibration));
 
@@ -129,49 +131,73 @@ public partial class UIAnimations : Node
     // --------------------------------------------------------------------------------------------------------------------------------
     #region JUMPING - FALLING
 
-public void JumpAnimation()
-{
-    StopAllTweens();
-
-    for (int i = 0; i < animatableObjects.Length; i++)
-    {
-        targetPositions[i] = originalPositions[i] + new Vector2(0, -40);
-
-        var posTween = CreateSmoothTween($"position_{i}");
-        posTween.Parallel().TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.15f, 0.3f)
-            .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
-
-        posTween.Parallel().TweenProperty(animatableObjects[i], "position", targetPositions[i], 0.8f)
-            .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Spring);
-
-        posTween.Parallel().TweenProperty(animatableObjects[i], "scale", originalScales[i], 0.3f)
-            .SetDelay(.3f)
-            .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
-
-        var colorTween = CreateSmoothTween($"color_{i}");
-        colorTween.Parallel().TweenProperty(animatableObjects[i], "modulate", Colors.LimeGreen * 1.3f, animationSpeed);
-    }
-}
-
-    // State continuity-based fall animation
-    public void FallAnimation()
+    public void JumpAnimation()
     {
         StopAllTweens();
 
-        // Update positions to start from current position
+        for (int i = 0; i < animatableObjects.Length; i++)
+        {
+            targetPositions[i] = originalPositions[i] + new Vector2(0, -40);
+
+            // PopUp();
+
+            var posTween = CreateSmoothTween($"position_{i}");
+            posTween.Parallel().TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.3f, 0.13f)
+                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+            posTween.Parallel().TweenProperty(animatableObjects[i], "scale", originalScales[i], 0.13f)
+                .SetDelay(.13f);
+
+            posTween.Parallel().TweenProperty(animatableObjects[i], "position", targetPositions[i], 0.8f)
+                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Spring);
+
+            var colorTween = CreateSmoothTween($"color_{i}");
+            colorTween.Parallel().TweenProperty(animatableObjects[i], "modulate", Colors.LimeGreen * 1.3f, animationSpeed);
+        }
+    }
+
+    public void PopUp()
+    {
+        for (int i = 0; i < animatableObjects.Length; i++)
+        {
+            var pop = CreateSmoothTween($"popUp_{i}");
+            pop.Parallel().TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.35f, 0.06f)
+                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+            pop.Parallel().TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.15f, 0.06f)
+                .SetDelay(.06f)
+                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+            pop.Parallel().TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.25f, 0.06f)
+                .SetDelay(.12f)
+                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+            pop.Parallel().TweenProperty(animatableObjects[i], "scale", originalScales[i], 0.06f)
+                .SetDelay(.18f)
+                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        }
+    }
+
+    public void FallAnimation()
+    {
+        StopAllTweens();
+        float fallDuration = 3f;
+
         UpdateCurrentPositions();
 
         isFalling = true;
 
-        // Start falling immediately from current position - no upward transition
         for (int i = 0; i < animatableObjects.Length; i++)
         {
-            // Use current position as starting point and fall from there
             Vector2 fallTargetPosition = currentPositions[i] + new Vector2(0, 80);
 
-            // Stretch objects (wider, shorter) and move them below current position
+
             var fallTween = CreateSmoothTween($"fall_{i}");
-            fallTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * new Vector2(1.3f, 1f), fallDuration)
+            // fallTween.TweenProperty(animatableObjects[i], "$1", $2[1], $3, $5)
+            // .SetEase(Tween.EasyType.$6).SetTrans(Tween.TransitionType.$7);
+            fallTween.Parallel().TweenProperty(animatableObjects[i], "scale", originalScales[i] * new Vector2(.9f, .9f), .03f)
+                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Cubic);
+            fallTween.Parallel().TweenProperty(animatableObjects[i], "scale", originalScales[i] * new Vector2(1.1f, 1.1f), .03f)
+                .SetDelay(.03f)
+                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Cubic);
+
+            fallTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * new Vector2(.8f, .8f), fallDuration * 2.5f)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Cubic);
             fallTween.Parallel().TweenProperty(animatableObjects[i], "position", fallTargetPosition, fallDuration)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Cubic);
@@ -204,12 +230,11 @@ public void JumpAnimation()
             var bounceTween = CreateSmoothTween($"fallBounce_{i}");
 
             // Quick compression
-            bounceTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.6f, 0.1f)
+            bounceTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * .85f, 0.1f)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
 
             // Elastic expansion
-            bounceTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1f, 0.15f)
-                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
+
 
             // Settle to original scale
             bounceTween.TweenProperty(animatableObjects[i], "scale", originalScales[i], .25f)
@@ -238,23 +263,6 @@ public void JumpAnimation()
 
         for (int i = 0; i < animatableObjects.Length; i++)
         {
-            targetPositions[i] = originalPositions[i] + new Vector2(0, 2);
-
-            var initialPosTween = CreateSmoothTween($"initialPos_{i}");
-            initialPosTween.TweenProperty(animatableObjects[i], "position", targetPositions[i], transitionSpeed);
-
-            var colorTween = CreateSmoothTween($"color_{i}");
-            colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.LightBlue * 1.1f, animationSpeed);
-        }
-    }
-
-
-    public void SprintAnimation()
-    {
-        StopAllTweens();
-
-        for (int i = 0; i < animatableObjects.Length; i++)
-        {
             targetPositions[i] = originalPositions[i] + new Vector2(5, -5);
             var posTween = CreateSmoothTween($"position_{i}");
             posTween.TweenProperty(animatableObjects[i], "position", targetPositions[i], transitionSpeed);
@@ -269,18 +277,33 @@ public void JumpAnimation()
         }
     }
 
-    private void StartSprintPulse()
+
+    public void SprintAnimation()
     {
+        StopAllTweens();
+
         for (int i = 0; i < animatableObjects.Length; i++)
         {
             targetPositions[i] = originalPositions[i] + new Vector2(5, -5);
+            var posTween = CreateSmoothTween($"position_{i}");
+            posTween.TweenProperty(animatableObjects[i], "position", targetPositions[i], transitionSpeed);
 
-            var pulseTween = CreateSmoothTween($"sprintPulse_{i}");
-            pulseTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.08f, 0.3f);
+            var colorTween = CreateSmoothTween($"color_{i}");
+            colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Purple * 1.3f, animationSpeed);
+
+            var pulseTween = CreateSmoothTween($"pulse_{i}");
+            pulseTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.2f, 0.3f);
             pulseTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.12f, 0.3f);
-            pulseTween.SetLoops();
+
+            var pulseLoop = CreateSmoothTween($"pulseLoop_{i}");
+            pulseLoop.TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.15f, 0.25f)
+                .SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Sine);
+            pulseLoop.TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.12f, 0.25f)
+                .SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Sine);
+            pulseLoop.SetLoops();
         }
     }
+
     #endregion
     // --------------------------------------------------------------------------------------------------------------------------------
     // --------------------------------------------------------------------------------------------------------------------------------
@@ -305,8 +328,9 @@ public void JumpAnimation()
             scaleTween.TweenProperty(animatableObjects[i], "scale", originalScales[i], animationSpeed);
         }
 
-        var firstPosTween = CreateSmoothTween("position_0");
-        firstPosTween.TweenCallback(Callable.From(StartIdleBreathing));
+        // Start breathing effect after initial animation
+        var breathingTween = CreateSmoothTween("startBreathing");
+        breathingTween.TweenCallback(Callable.From(StartIdleBreathing)).SetDelay(transitionSpeed * 1.5f);
     }
 
     private void StartIdleBreathing()
