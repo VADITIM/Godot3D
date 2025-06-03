@@ -234,8 +234,6 @@ public partial class UIAnimations : Node
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
 
             // Elastic expansion
-
-
             // Settle to original scale
             bounceTween.TweenProperty(animatableObjects[i], "scale", originalScales[i], .25f)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Bounce);
@@ -249,6 +247,31 @@ public partial class UIAnimations : Node
             var bounceColorTween = CreateSmoothTween($"fallBounceColor_{i}");
             bounceColorTween.TweenProperty(animatableObjects[i], "modulate", Colors.White * 1.8f, 0.08f);
             bounceColorTween.TweenProperty(animatableObjects[i], "modulate", originalColors[i], 0.42f);
+        }
+
+        // After bounce completes, transition to the new state
+        var transitionTween = CreateSmoothTween("bounceTransition");
+        transitionTween.TweenInterval(0.04f); // Wait for bounce to complete
+        transitionTween.TweenCallback(Callable.From(() => TransitionToNewState(newState)));
+    }
+
+    private void TransitionToNewState(string newState)
+    {
+        // Trigger the appropriate animation for the new state
+        switch (newState)
+        {
+            case "Moving":
+                MoveAnimation();
+                break;
+            case "Sprinting":
+                SprintAnimation();
+                break;
+            case "Idle":
+                IdleAnimation();
+                break;
+            default:
+                IdleAnimation();
+                break;
         }
     }
     #endregion

@@ -1,7 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://c25rx1plwdeb7"]
+[gd_scene load_steps=15 format=3 uid="uid://co1hejhaeo4lj"]
 
 [ext_resource type="Texture2D" uid="uid://lb04gh2uw2ch" path="res://Assets/textures/stone-wall_BaseColor.png" id="1_jw32o"]
-[ext_resource type="PackedScene" uid="uid://b6gpic6yympc4" path="res://Scenes/Player.tscn" id="1_r150o"]
+[ext_resource type="PackedScene" uid="uid://dd4v11rqiyga" path="res://Scenes/Player.tscn" id="1_r150o"]
 [ext_resource type="Texture2D" uid="uid://ct8qaprv6gf8s" path="res://Assets/textures/stone-wall_Ao.png" id="2_50glp"]
 [ext_resource type="Texture2D" uid="uid://bjky5hd8yfqo5" path="res://Assets/textures/stone-wall_Normal.png" id="3_vy5pj"]
 [ext_resource type="Texture2D" uid="uid://0ji65fde3abv" path="res://Assets/textures/stone-wall_Roughness.png" id="4_bmxlf"]
@@ -56,6 +56,9 @@ material = SubResource("StandardMaterial3D_r150o")
 
 [node name="Player" parent="." instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.6126, 2.58937, 9.17618)
+
+[node name="Camera" parent="Player/Components" index="1" node_paths=PackedStringArray("playerCamera")]
+playerCamera = NodePath("../../Camera")
 
 [node name="Camera" parent="Player" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0512466, 0.390877, -0.0405502)

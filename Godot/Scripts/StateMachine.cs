@@ -119,13 +119,14 @@ public partial class StateMachine : Node
                 return "Jumping";
         }
 
+        // --- FIX: Check sprinting/moving before Idle when grounded ---
         if (sprinting)
             return "Sprinting";
-
         if (moving)
             return "Moving";
-        else
-            return "Idle";
+        // ------------------------------------------------------------
+
+        return "Idle";
     }
 
     private State GetMovementState(Vector3 direction)
@@ -304,6 +305,7 @@ public partial class StateMachine : Node
 
         if (isTransitioningFromFallToGround && (state == "Idle" || state == "Moving" || state == "Sprinting"))
         {
+            // Only trigger elastic animation - it will handle the transition to the new state
             Components.Instance.UIAnimations.ElasticAnimation(state);
         }
         else
