@@ -134,11 +134,11 @@ public partial class WallSnapDetection : Node3D
 
 	private bool IsEligibleForWallDetection()
 	{
-		// Must be sprinting and not grounded
-		if (!Components.Instance.Movement.isSprinting || Components.Instance.Movement.isGrounded)
+		// Must be moving and not grounded (removed sprinting requirement)
+		if (!Components.Instance.Movement.isMoving || Components.Instance.Movement.isGrounded)
 		{
 			if (enableDebugOutput)
-				GD.Print("Not eligible: not sprinting or grounded");
+				GD.Print("Not eligible: not moving or grounded");
 			return false;
 		}
 

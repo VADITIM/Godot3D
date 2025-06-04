@@ -12,11 +12,21 @@ public partial class Player : CharacterBody3D
     public override void _PhysicsProcess(double delta)
     {
         Components.Instance.Movement.HandleMovement((float)delta);
-        Components.Instance.WallManager.CheckWall(); // Check wall state first
-        Components.Instance.WallManager.HandleWallJump(); // Then handle wall jump (which can modify wall state)
-        Components.Instance.WallManager.HandleWalling(); // Finally apply walling effects
+        Components.Instance.WallManager.CheckWall();
+
+        if (Input.IsActionPressed("jump"))
+        {
+            Components.Instance.Movement.isHoldingJump = true;
+        }
+        else if (Input.IsActionJustReleased("jump"))
+        {
+            Components.Instance.WallManager.HandleWallJump();
+            Components.Instance.Movement.isHoldingJump = false;
+        }
+
+        Components.Instance.WallManager.HandleWalling();
     }
-    
+
     public override void _Process(double delta)
     {
         Components.Instance.Movement.HandleGravity((float)delta);

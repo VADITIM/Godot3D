@@ -25,7 +25,7 @@ public partial class GameUI : Control
         groundDetectionRay.Enabled = true;
         groundDetectionRay.TargetPosition = new Vector3(0, -maxFallDistance, 0);
         groundDetectionRay.CollisionMask = 1;
-        Components.Instance.Player.AddChild(groundDetectionRay);
+        // Components.Instance.Player.AddChild(groundDetectionRay);
     }
 
     public float GetDistanceToGround()

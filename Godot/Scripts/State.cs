@@ -2,9 +2,10 @@ public enum State
 {
     Idle,
     Moving,
-    Sprinting,
+    Dodging,
     WallMoving,
     WallJumping,
+    WallSliding,
     Airborne,
     Falling,
     OnGround

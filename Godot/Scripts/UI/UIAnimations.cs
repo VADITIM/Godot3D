@@ -55,7 +55,7 @@ public partial class UIAnimations : Node
         for (int i = 0; i < animatableObjects.Length; i++)
         {
             currentPositions[i] = animatableObjects[i].Position;
-            targetPositions[i] = animatableObjects[i].Position; // Update target to current position
+            targetPositions[i] = animatableObjects[i].Position; 
         }
     }
 
@@ -204,7 +204,6 @@ public partial class UIAnimations : Node
             fallTween.Parallel().TweenProperty(animatableObjects[i], "modulate", Colors.OrangeRed * 1.3f, 0.3f);
         }
 
-        // Timer to track fall completion
         var fallTimerTween = CreateSmoothTween("fallTimer");
         fallTimerTween.TweenInterval(fallDuration);
         fallTimerTween.TweenCallback(Callable.From(OnFallAnimationComplete));
@@ -213,10 +212,8 @@ public partial class UIAnimations : Node
     private void OnFallAnimationComplete()
     {
         isFalling = false;
-        // Animation naturally completed - objects stay in stretched position
     }
 
-    // Apple-style bounce back when landing from fall
     public void ElasticAnimation(string newState)
     {
         if (!isFalling) return;
@@ -224,32 +221,25 @@ public partial class UIAnimations : Node
         isFalling = false;
         StopAllTweens();
 
-        // Apple-style bounce back to original position with elastic effect
         for (int i = 0; i < animatableObjects.Length; i++)
         {
             var bounceTween = CreateSmoothTween($"fallBounce_{i}");
 
-            // Quick compression
             bounceTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * .85f, 0.1f)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
 
-            // Elastic expansion
-            // Settle to original scale
             bounceTween.TweenProperty(animatableObjects[i], "scale", originalScales[i], .25f)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Bounce);
 
-            // Bounce position back to original
             var bouncePosTween = CreateSmoothTween($"fallBouncePos_{i}");
             bouncePosTween.TweenProperty(animatableObjects[i], "position", originalPositions[i], 0.5f)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Bounce);
 
-            // Flash color effect
             var bounceColorTween = CreateSmoothTween($"fallBounceColor_{i}");
             bounceColorTween.TweenProperty(animatableObjects[i], "modulate", Colors.White * 1.8f, 0.08f);
             bounceColorTween.TweenProperty(animatableObjects[i], "modulate", originalColors[i], 0.42f);
         }
 
-        // After bounce completes, transition to the new state
         var transitionTween = CreateSmoothTween("bounceTransition");
         transitionTween.TweenInterval(0.04f); // Wait for bounce to complete
         transitionTween.TweenCallback(Callable.From(() => TransitionToNewState(newState)));
@@ -257,14 +247,13 @@ public partial class UIAnimations : Node
 
     private void TransitionToNewState(string newState)
     {
-        // Trigger the appropriate animation for the new state
         switch (newState)
         {
             case "Moving":
                 MoveAnimation();
                 break;
-            case "Sprinting":
-                SprintAnimation();
+            case "Dodging":
+                MoveAnimation(); 
                 break;
             case "Idle":
                 IdleAnimation();
@@ -351,7 +340,6 @@ public partial class UIAnimations : Node
             scaleTween.TweenProperty(animatableObjects[i], "scale", originalScales[i], animationSpeed);
         }
 
-        // Start breathing effect after initial animation
         var breathingTween = CreateSmoothTween("startBreathing");
         breathingTween.TweenCallback(Callable.From(StartIdleBreathing)).SetDelay(transitionSpeed * 1.5f);
     }
@@ -465,7 +453,7 @@ public partial class UIAnimations : Node
     public void ScaleBounce()
     {
         if (Components.Instance?.StateMachine != null)
-            Components.Instance.StateMachine.TriggerState("Sprinting");
+            Components.Instance.StateMachine.TriggerState("Dodging");
     }
 
     public void BounceLabel()
@@ -481,12 +469,10 @@ public partial class UIAnimations : Node
 
     private void ShakeFromTargetWithDynamicIntensity(int index)
     {
-        // Calculate intensity based on current speed (0 to 300) mapped to (0 to 10)
         float currentSpeed = Components.Instance.Movement.currentSpeed;
-        float normalizedSpeed = Mathf.Clamp(currentSpeed / 300f, 0f, 1f); // 0 to 1
-        float intensity = normalizedSpeed * 10f; // 0 to 10
+        float normalizedSpeed = Mathf.Clamp(currentSpeed / 300f, 0f, 1f); 
+        float intensity = normalizedSpeed * 10f;
 
-        // Scale shake offset based on intensity
         Vector2 shakeOffset = new Vector2(intensity, intensity);
 
         var randomOffset = new Vector2(

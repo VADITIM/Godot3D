@@ -9,6 +9,8 @@ public partial class WallManager : Node
 	public bool onWall;
 	public bool OnWall { get => onWall; set => onWall = value; }
 
+	public bool isWallSliding => onWall && Components.Instance.Movement.velocity.Y <= 0.5f && !Components.Instance.Movement.isGrounded;
+
 	public bool isWallJumping = false;
 
 	private bool leftWallCollision = false;
@@ -18,6 +20,12 @@ public partial class WallManager : Node
 
 	private float wallStateChangeTimer = 0.0f;
 	private const float MIN_WALL_STATE_CHANGE_INTERVAL = 0.1f;
+
+	public bool canWallMove =>
+		onWall &&
+		!Components.Instance.Movement.isGrounded &&
+		Components.Instance.Movement.isMoving &&
+		Components.Instance.Movement.isHoldingJump;
 
 	public override void _Ready()
 	{
@@ -36,7 +44,7 @@ public partial class WallManager : Node
 	{
 		wallStateChangeTimer += (float)GetProcessDeltaTime();
 
-		if (!Components.Instance.Movement.isSprinting || Components.Instance.Movement.isGrounded)
+		if (!Components.Instance.Movement.isMoving || Components.Instance.Movement.isGrounded)
 		{
 			onWall = false;
 			leftWallCollision = false;
@@ -90,7 +98,7 @@ public partial class WallManager : Node
 			rightWallCollision = newRightWallCollision;
 			leftWallCollision = newLeftWallCollision;
 			onWall = newOnWall;
-			wallStateChangeTimer = 0.0f; // Reset timer
+			wallStateChangeTimer = 0.0f;
 		}
 		else if (newOnWall == onWall)
 		{
@@ -101,11 +109,9 @@ public partial class WallManager : Node
 
 	public void HandleWalling()
 	{
-		bool isSprinting = Components.Instance.Movement.isSprinting;
-
 		float originalGravity = 13.8f;
 
-		if (onWall && isSprinting)
+		if (canWallMove)
 		{
 			Components.Instance.Movement.velocity.Y = 0;
 			Components.Instance.Movement.gravity = 0;
@@ -120,7 +126,8 @@ public partial class WallManager : Node
 	{
 		var Movement = Components.Instance.Movement;
 
-		if (onWall && Input.IsActionJustPressed("jump"))
+		// Trigger wall jump when player releases jump while wall moving
+		if (onWall && Input.IsActionJustReleased("jump") && canWallMove)
 		{
 			wallTimer.Start();
 			isWallJumping = true;
@@ -135,7 +142,7 @@ public partial class WallManager : Node
 			Vector3 jumpDirection = Vector3.Zero;
 			if (wasLeftWall)
 			{
-				jumpDirection = new Vector3(100, 0, 0);
+				jumpDirection = new Vector3(1, 0, 0);
 			}
 			else if (wasRightWall)
 			{

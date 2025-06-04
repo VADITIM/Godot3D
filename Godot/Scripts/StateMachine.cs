@@ -19,10 +19,11 @@ public partial class StateMachine : Node
     private bool jumping;
     private bool falling;
     private bool moving;
-    private bool sprinting;
+    private bool dodging;
     private bool grounded;
     private bool onWall;
     private bool wallJump;
+    private bool wallSliding;
     private float velocityY;
     private float currentSpeed;
     private Vector3 direction;
@@ -32,9 +33,10 @@ public partial class StateMachine : Node
     {
         { "Wall Running", Colors.Cyan },
         { "Wall Jumping", Colors.Orange },
+        { "Wall Sliding", Colors.Red },
         { "Jumping", Colors.LimeGreen },
         { "Falling", Colors.OrangeRed },
-        { "Sprinting", Colors.Purple },
+        { "Dodging", Colors.Purple },
         { "Moving", Colors.DeepSkyBlue },
         { "Idle", Colors.LightGray },
         { "Airborne", Colors.Yellow },
@@ -58,10 +60,11 @@ public partial class StateMachine : Node
         jumping = Components.Instance.Movement.isJumping;
         falling = Components.Instance.Movement.velocity.Y < 0;
         moving = Components.Instance.Movement.isMoving;
-        sprinting = Components.Instance.Movement.isSprinting;
+        dodging = false; 
         grounded = Components.Instance.Movement.isGrounded;
         onWall = Components.Instance.WallManager.onWall;
         wallJump = Components.Instance.WallManager.isWallJumping;
+        wallSliding = Components.Instance.WallManager.isWallSliding;
         velocityY = Components.Instance.Movement.velocity.Y;
         currentSpeed = Components.Instance.Movement.currentSpeed;
         direction = Components.Instance.Movement.direction;
@@ -80,14 +83,21 @@ public partial class StateMachine : Node
         if (wallJump && velocityY > 0 && !grounded)
             return "Wall Jumping";
 
-        if (onWall && (moving || sprinting) && !grounded)
-            return "Wall Running";
+        if (onWall && !grounded)
+        {
+            bool isActivelyWallRunning = Components.Instance.Movement.isHoldingJump &&
+                                       (moving || dodging) &&
+                                       velocityY >= -0.5f; 
+
+            if (isActivelyWallRunning)
+                return "Wall Running";
+
+            return "Wall Sliding";
+        }
 
         if (!grounded)
         {
-            if (onWall && Input.IsActionJustPressed("jump"))
-                return "Wall Jumping";
-            else if (jumping && velocityY > 0)
+            if (jumping && velocityY > 0)
                 return "Jumping";
             else if (velocityY < 0)
                 return "Falling";
@@ -95,7 +105,7 @@ public partial class StateMachine : Node
                 return "Jumping";
         }
 
-        if (sprinting) return "Sprinting";
+        if (dodging) return "Dodging";
         if (moving) return "Moving";
 
         return "Idle";
@@ -109,7 +119,8 @@ public partial class StateMachine : Node
         {
             State.WallMoving => "Wall Running",
             State.WallJumping => "Wall Jumping",
-            State.Sprinting => "Sprinting",
+            State.WallSliding => "Wall Sliding",
+            State.Dodging => "Dodging",
             State.Moving => "Moving",
             State.Airborne => "Airborne",
             State.Falling => "Falling",
@@ -122,14 +133,23 @@ public partial class StateMachine : Node
     {
         bool isMoving = direction.LengthSquared() > 0.01f;
 
-        if (onWall && (sprinting || moving) && !grounded)
-            return State.WallMoving;
-
-        if (onWall && Input.IsActionJustPressed("jump") && !grounded)
+        if (wallJump && !grounded)
             return State.WallJumping;
 
-        if (isMoving && sprinting && grounded)
-            return State.Sprinting;
+        if (onWall && !grounded)
+        {
+            bool isActivelyWallRunning = Components.Instance.Movement.isHoldingJump &&
+                                       (dodging || isMoving) &&
+                                       velocityY >= -0.5f; 
+
+            if (isActivelyWallRunning)
+                return State.WallMoving;
+
+            return State.WallSliding;
+        }
+
+        if (isMoving && dodging && grounded)
+            return State.Dodging;
 
         if (isMoving && grounded)
             return State.Moving;
@@ -154,10 +174,11 @@ public partial class StateMachine : Node
 
         switch (state)
         {
-            case State.Sprinting: maxSpeed = Components.Instance.Movement.maxSprintSpeed; break;
+            case State.Dodging: maxSpeed = Components.Instance.Movement.maxSpeed; break;
             case State.Moving: maxSpeed = Components.Instance.Movement.maxSpeed; break;
             case State.WallMoving: maxSpeed = Components.Instance.Movement.maxWallSpeed; break;
-            case State.Airborne: maxSpeed = 0f; break;
+            case State.WallSliding: maxSpeed = Components.Instance.Movement.maxSpeed * 0.3f; break; 
+            case State.Airborne: maxSpeed = Components.Instance.Movement.maxAirSpeed; break; 
         }
 
         ProcessStates(delta);
@@ -206,8 +227,17 @@ public partial class StateMachine : Node
             Components.Instance.Movement.currentSpeed = Mathf.MoveToward(
                 Components.Instance.Movement.currentSpeed,
                 Components.Instance.Movement.maxWallSpeed,
-                Components.Instance.Movement.wallAcceleration * delta * 10);
+                Components.Instance.Movement.wallAcceleration * delta * 15); 
         }
+
+        if (state == State.WallSliding)
+        {
+            Components.Instance.Movement.currentSpeed = Mathf.MoveToward(
+                Components.Instance.Movement.currentSpeed,
+                Components.Instance.Movement.maxSpeed * 0.2f, 
+                Components.Instance.Movement.groundDeceleration * delta * 3); 
+        }
+
         if (state == State.Airborne)
         {
             if (currentSpeed < 30)
@@ -254,7 +284,7 @@ public partial class StateMachine : Node
         if (currentState == newState) return;
 
         isTransitioningFromJumpToFall = (currentState == "Jumping" || currentState == "Airborne") && newState == "Falling";
-        isTransitioningFromFallToGround = currentState == "Falling" && (newState == "Idle" || newState == "Moving" || newState == "Sprinting");
+        isTransitioningFromFallToGround = currentState == "Falling" && (newState == "Idle" || newState == "Moving" || newState == "Dodging");
 
         previousState = currentState;
         currentState = newState;
@@ -270,7 +300,7 @@ public partial class StateMachine : Node
     {
         if (Components.Instance.UIAnimations == null) return;
 
-        if (isTransitioningFromFallToGround && (state == "Idle" || state == "Moving" || state == "Sprinting"))
+        if (isTransitioningFromFallToGround && (state == "Idle" || state == "Moving" || state == "Dodging"))
         {
             Components.Instance.UIAnimations.ElasticAnimation(state);
         }
@@ -284,14 +314,17 @@ public partial class StateMachine : Node
                 case "Wall Jumping":
                     Components.Instance.UIAnimations.WallJumpAnimation();
                     break;
+                case "Wall Sliding":
+                    Components.Instance.UIAnimations.FallAnimation();
+                    break;
                 case "Jumping":
                     Components.Instance.UIAnimations.JumpAnimation();
                     break;
                 case "Falling":
                     Components.Instance.UIAnimations.FallAnimation();
                     break;
-                case "Sprinting":
-                    Components.Instance.UIAnimations.SprintAnimation();
+                case "Dodging":
+                    Components.Instance.UIAnimations.MoveAnimation();
                     break;
                 case "Moving":
                     Components.Instance.UIAnimations.MoveAnimation();

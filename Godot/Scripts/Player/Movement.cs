@@ -4,37 +4,38 @@ using Godot;
 public partial class Movement : Node
 {
     public float currentSpeed = 0.0f;
-    [Export] public float maxSpeed = 20.0f;
+    [Export] public float maxSpeed = 28.0f;
     [Export] public float maxSprintSpeed = 28.0f;
     [Export] public float maxAirSpeed = 500.0f;
     [Export] public float maxWallSpeed = 70.0f;
 
-    [Export] public float groundAcceleration = 1.5f; 
+    [Export] public float groundAcceleration = 1.5f;
     [Export] public float airAcceleration = 1.0f;
-    [Export] public float wallAcceleration = 1.05f;
+    [Export] public float wallAcceleration = 2f;
 
     [Export] public float groundDeceleration = 2.5f;
     [Export] public float speedExcessDeceleration = 4.5f;
     [Export] public float airDeceleration = .55f;
 
     [Export] public float jumpForce = 7f;
-    [Export] public float jumpBoostDuration = 0.1f; 
+    [Export] public float jumpBoostDuration = 0.1f;
     [Export] public float jumpBoostMultiplier = 1.4f;
 
     public float gravity = 13.8f;
-    [Export] public float fallingGravityMultiplier = 1.6f; // Gravity multiplier when falling
-    [Export] public float apexGravityMultiplier = 1f; // Gravity multiplier at the apex of jump
-    [Export] public float apexThreshold = 9.0f; // Velocity threshold to consider as apex
+    [Export] public float fallingGravityMultiplier = 1.6f;
+    [Export] public float apexGravityMultiplier = 1f;
+    [Export] public float apexThreshold = 9.0f;
 
     private float jumpBoostTimer = 0f;
     private bool isJumpBoosting = false;
 
     public Vector3 velocity = Vector3.Zero;
 
+    public bool isHoldingJump = false;
     public bool isGrounded = true;
     public bool isJumping = false;
     public bool isWallJumping = false;
-    public bool isSprinting = false;
+    public bool isDodging = false;
     private bool wasGrounded = true;
     public Vector3 direction = Vector3.Zero;
 
@@ -70,7 +71,7 @@ public partial class Movement : Node
             isWallJumping = false;
             jumpBoostTimer = 0f;
         }
-        else if (Input.IsActionJustPressed("jump") && !isGrounded && !Components.Instance.WallManager.onWall)
+        else if (!isHoldingJump && !isGrounded && !Components.Instance.WallManager.onWall)
         {
             isJumpBoosting = true;
             jumpBoostTimer = 0f;
@@ -91,7 +92,7 @@ public partial class Movement : Node
             }
         }
 
-        isSprinting = Input.IsActionPressed("sprint");
+        // isSprinting = Input.IsActionPressed("sprint"); // Removed - replaced with dodging system
 
         Components.Instance.StateMachine.HandleAcceleration(direction, delta, justLanded);
 
@@ -108,7 +109,7 @@ public partial class Movement : Node
         if (isGrounded)
         {
             isJumping = false;
-            isWallJumping = false; 
+            isWallJumping = false;
         }
     }
 
@@ -119,7 +120,7 @@ public partial class Movement : Node
             Components.Instance.WallManager.ForceResetWallState();
         }
 
-        if (Components.Instance.WallManager.onWall && isSprinting)
+        if (Components.Instance.WallManager.onWall && isDodging)
         {
             return;
         }
