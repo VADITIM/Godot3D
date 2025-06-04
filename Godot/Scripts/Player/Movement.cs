@@ -7,24 +7,24 @@ public partial class Movement : Node
     [Export] public float maxSpeed = 20.0f;
     [Export] public float maxSprintSpeed = 28.0f;
     [Export] public float maxAirSpeed = 500.0f;
-    [Export] public float maxWallSpeed = 150.0f;
+    [Export] public float maxWallSpeed = 70.0f;
 
-    [Export] public float groundAcceleration = 1.5f; // Acceleration rate on ground
+    [Export] public float groundAcceleration = 1.5f; 
     [Export] public float airAcceleration = 1.0f;
-    [Export] public float wallAcceleration = 1.25f;
+    [Export] public float wallAcceleration = 1.05f;
 
     [Export] public float groundDeceleration = 2.5f;
     [Export] public float speedExcessDeceleration = 4.5f;
     [Export] public float airDeceleration = .55f;
 
-    [Export] public float jumpForce = 5f;
-    [Export] public float jumpBoostDuration = 0.1f; // Duration of initial jump boost
-    [Export] public float jumpBoostMultiplier = 1.5f; // Multiplier for jump boost
+    [Export] public float jumpForce = 7f;
+    [Export] public float jumpBoostDuration = 0.1f; 
+    [Export] public float jumpBoostMultiplier = 1.4f;
 
     public float gravity = 13.8f;
-    [Export] public float fallingGravityMultiplier = 1.4f; // Gravity multiplier when falling
-    [Export] public float apexGravityMultiplier = .6f; // Gravity multiplier at the apex of jump
-    [Export] public float apexThreshold = 2.0f; // Velocity threshold to consider as apex
+    [Export] public float fallingGravityMultiplier = 1.6f; // Gravity multiplier when falling
+    [Export] public float apexGravityMultiplier = 1f; // Gravity multiplier at the apex of jump
+    [Export] public float apexThreshold = 9.0f; // Velocity threshold to consider as apex
 
     private float jumpBoostTimer = 0f;
     private bool isJumpBoosting = false;
@@ -64,21 +64,17 @@ public partial class Movement : Node
 
         if (Input.IsActionJustPressed("jump") && isGrounded)
         {
-            // Initial jump burst
             velocity.Y = jumpForce;
             isGrounded = false;
             isJumping = true;
-            isWallJumping = false; // Ensure wall jumping is false for regular jumps
-            isJumpBoosting = true;
+            isWallJumping = false;
             jumpBoostTimer = 0f;
         }
         else if (Input.IsActionJustPressed("jump") && !isGrounded && !Components.Instance.WallManager.onWall)
         {
-            // Allow jump boost if already jumping
             isJumpBoosting = true;
             jumpBoostTimer = 0f;
             isJumping = false;
-            // Don't reset isWallJumping here - let it persist if it was a wall jump
         }
 
         if (isJumpBoosting)
@@ -87,7 +83,7 @@ public partial class Movement : Node
 
             if (jumpBoostTimer <= jumpBoostDuration && isJumping)
             {
-                velocity.Y += jumpForce * jumpBoostMultiplier * delta * 10;
+                velocity.Y += jumpForce * jumpBoostMultiplier * delta;
             }
             else
             {
@@ -112,7 +108,7 @@ public partial class Movement : Node
         if (isGrounded)
         {
             isJumping = false;
-            isWallJumping = false; // Only reset wall jumping when landing
+            isWallJumping = false; 
         }
     }
 

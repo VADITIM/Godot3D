@@ -4,16 +4,17 @@ using System.Collections.Generic;
 
 public partial class StateMachine : Node
 {
-    [Export] private float stateUpdateInterval = 0.05f;
-
-    private float stateUpdateTimer = 0f;
-
+    public event Action<string> StateChanged;
     private string currentState = "";
     private string previousState = "";
+    public string CurrentState => currentState;
+    public string PreviousState => previousState;
+    private float stateUpdateInterval = 0.05f;
+    private float stateUpdateTimer = 0f;
+    public void TriggerState(string stateName) { OnStateChanged(stateName); }
+
     private bool isTransitioningFromJumpToFall = false;
     private bool isTransitioningFromFallToGround = false;
-
-    public event Action<string> StateChanged;
 
     private bool jumping;
     private bool falling;
@@ -26,18 +27,7 @@ public partial class StateMachine : Node
     private float currentSpeed;
     private Vector3 direction;
 
-    private enum State
-    {
-        Idle,
-        Moving,
-        Sprinting,
-        WallMoving,
-        WallJumping,
-        Airborne,
-        Falling,
-        OnGround
-    }
-
+    public Color GetStateColor(string state) => StateColors.ContainsKey(state) ? StateColors[state] : Colors.Gray;
     public readonly Dictionary<string, Color> StateColors = new Dictionary<string, Color>
     {
         { "Wall Running", Colors.Cyan },
@@ -50,20 +40,6 @@ public partial class StateMachine : Node
         { "Airborne", Colors.Yellow },
         { "Unknown", Colors.Gray }
     };
-
-
-    public string CurrentState => currentState;
-    public string PreviousState => previousState;
-    public Color GetStateColor(string state) => StateColors.ContainsKey(state) ? StateColors[state] : Colors.Gray;
-
-    public override void _Ready()
-    {
-        InitializeComponents();
-    }
-
-    private void InitializeComponents()
-    {
-    }
 
     public override void _Process(double delta)
     {
@@ -104,7 +80,7 @@ public partial class StateMachine : Node
         if (wallJump && velocityY > 0 && !grounded)
             return "Wall Jumping";
 
-        if (onWall && sprinting && !grounded)
+        if (onWall && (moving || sprinting) && !grounded)
             return "Wall Running";
 
         if (!grounded)
@@ -119,21 +95,34 @@ public partial class StateMachine : Node
                 return "Jumping";
         }
 
-        // --- FIX: Check sprinting/moving before Idle when grounded ---
-        if (sprinting)
-            return "Sprinting";
-        if (moving)
-            return "Moving";
-        // ------------------------------------------------------------
+        if (sprinting) return "Sprinting";
+        if (moving) return "Moving";
 
         return "Idle";
+    }
+
+    public string GetCurrentMovementState()
+    {
+        State state = GetMovementState(direction);
+
+        return state switch
+        {
+            State.WallMoving => "Wall Running",
+            State.WallJumping => "Wall Jumping",
+            State.Sprinting => "Sprinting",
+            State.Moving => "Moving",
+            State.Airborne => "Airborne",
+            State.Falling => "Falling",
+            State.OnGround => "Idle",
+            _ => "Idle"
+        };
     }
 
     private State GetMovementState(Vector3 direction)
     {
         bool isMoving = direction.LengthSquared() > 0.01f;
 
-        if (onWall && sprinting && !grounded)
+        if (onWall && (sprinting || moving) && !grounded)
             return State.WallMoving;
 
         if (onWall && Input.IsActionJustPressed("jump") && !grounded)
@@ -208,7 +197,6 @@ public partial class StateMachine : Node
         Components.Instance.Movement.currentSpeed = Mathf.Max(Components.Instance.Movement.currentSpeed, 0);
     }
 
-    // Movement states processing - moved from Movement.cs
     public void ProcessStates(float delta)
     {
         State state = GetMovementState(direction);
@@ -260,6 +248,7 @@ public partial class StateMachine : Node
             }
         }
     }
+
     private void OnStateChanged(string newState)
     {
         if (currentState == newState) return;
@@ -277,35 +266,12 @@ public partial class StateMachine : Node
         TriggerUIAnimation(newState);
     }
 
-    public void TriggerState(string stateName)
-    {
-        OnStateChanged(stateName);
-    }
-
-    public string GetCurrentMovementState()
-    {
-        State state = GetMovementState(direction);
-
-        return state switch
-        {
-            State.WallMoving => "Wall Running",
-            State.WallJumping => "Wall Jumping",
-            State.Sprinting => "Sprinting",
-            State.Moving => "Moving",
-            State.Airborne => "Airborne",
-            State.Falling => "Falling",
-            State.OnGround => "Idle",
-            _ => "Idle"
-        };
-    }
-
     private void TriggerUIAnimation(string state)
     {
         if (Components.Instance.UIAnimations == null) return;
 
         if (isTransitioningFromFallToGround && (state == "Idle" || state == "Moving" || state == "Sprinting"))
         {
-            // Only trigger elastic animation - it will handle the transition to the new state
             Components.Instance.UIAnimations.ElasticAnimation(state);
         }
         else

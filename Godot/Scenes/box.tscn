@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://dfbckvn383ofn"]
+
+[ext_resource type="Texture2D" uid="uid://c8y6ba7y8d102" path="res://Assets/textures/Prototype Textures/Purple/texture_09.png" id="1_ego7h"]
+[ext_resource type="Texture2D" uid="uid://be15nxex63vhl" path="res://Assets/textures/Prototype Textures/Purple/texture_10.png" id="2_2jyye"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y6vpp"]
+albedo_texture = ExtResource("1_ego7h")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ego7h"]
+albedo_texture = ExtResource("2_2jyye")
+
+[node name="CSGBox3D" type="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0152018, 0.0543351, -0.0286345)
+material_override = SubResource("StandardMaterial3D_y6vpp")
+use_collision = true
+size = Vector3(3, 3, 3)
+material = SubResource("StandardMaterial3D_ego7h")

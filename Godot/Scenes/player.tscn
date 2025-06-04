@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://dd4v11rqiyga"]
+[gd_scene load_steps=8 format=3 uid="uid://dd4v11rqiyga"]
 
 [ext_resource type="Script" uid="uid://u8bg1t6muura" path="res://Scripts/Player/Player.cs" id="1_v0iea"]
 [ext_resource type="PackedScene" uid="uid://mkag7wgy2fpm" path="res://Scenes/Components.tscn" id="2_cvnsp"]
-[ext_resource type="Script" uid="uid://c1ivyi41jagt8" path="res://Scripts/Player/WallSnapDetection.cs" id="3_5ixxa"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="3_dewec"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="4_5ixxa"]
 
@@ -17,46 +16,37 @@ transition = 0
 ease = 2
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("rb")]
+transform = Transform3D(0.725, 0, 0, 0, 0.725, 0, 0, 0, 0.725, 0, 0, 0)
 script = ExtResource("1_v0iea")
 rb = NodePath(".")
 
 [node name="Components" parent="." instance=ExtResource("2_cvnsp")]
 
 [node name="WallManager" parent="Components" index="0" node_paths=PackedStringArray("leftWallRayCast", "rightWallRayCast")]
-leftWallRayCast = NodePath("../../Raycasts/WallRaycastLeft")
-rightWallRayCast = NodePath("../../Raycasts/WallRaycastRight")
+leftWallRayCast = NodePath("../../Raycasts/Left")
+rightWallRayCast = NodePath("../../Raycasts/Right")
 
-[node name="WallSnapDetection" parent="Components" index="1"]
-script = ExtResource("3_5ixxa")
-wallDetectionDistance = 5.0
-wallSnapDistance = 5.0
-raycastSpread = 1.0
-raycastCount = 1
-enableDebugOutput = true
-enableVisualization = true
-minWallRunSpeed = 0.0
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_cvnsp")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="Collision" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_6t5aa")
 
 [node name="Camera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.500529, 0)
 
-[node name="PhantomCamera3D" type="Node3D" parent="."]
+[node name="PC3D" type="Node3D" parent="."]
 script = ExtResource("3_dewec")
 tween_resource = SubResource("Resource_nn08x")
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
 [node name="Raycasts" type="Node3D" parent="."]
 
-[node name="WallRaycastRight" type="RayCast3D" parent="Raycasts"]
+[node name="Right" type="RayCast3D" parent="Raycasts"]
 target_position = Vector3(0.7, 0, 0)
 debug_shape_thickness = 5
 
-[node name="WallRaycastLeft" type="RayCast3D" parent="Raycasts"]
+[node name="Left" type="RayCast3D" parent="Raycasts"]
 target_position = Vector3(-0.7, 0, 0)
 debug_shape_thickness = 5
 
