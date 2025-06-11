@@ -126,7 +126,6 @@ public partial class WallManager : Node
 	{
 		var Movement = Components.Instance.Movement;
 
-		// Trigger wall jump when player releases jump while wall moving
 		if (onWall && Input.IsActionJustReleased("jump") && canWallMove)
 		{
 			wallTimer.Start();
@@ -155,7 +154,8 @@ public partial class WallManager : Node
 			if (jumpDirection != Vector3.Zero)
 			{
 				jumpDirection = Components.Instance.Player.rb.Transform.Basis * jumpDirection;
-				Movement.velocity += jumpDirection * 5.0f;
+
+				// Movement.velocity += jumpDirection * 5.0f;
 			}
 
 			WallJumping();
@@ -165,12 +165,15 @@ public partial class WallManager : Node
 	public void WallJumping()
 	{
 		if (!isWallJumping) return;
+
 		float currentSpeed = Components.Instance.Movement.currentSpeed;
 
 		if (currentSpeed <= 35)
 			Components.Instance.Movement.currentSpeed += currentSpeed / 5;
-		else if (currentSpeed > 35)
+		else if (currentSpeed <= 100)
 			Components.Instance.Movement.currentSpeed += currentSpeed / 10;
+		else if (currentSpeed > 100)
+			Components.Instance.Movement.currentSpeed = currentSpeed;
 	}
 
 

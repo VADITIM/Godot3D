@@ -1,0 +1,89 @@
+[gd_scene load_steps=3 format=3 uid="uid://b43fm07hjr3d7"]
+
+[ext_resource type="Material" uid="uid://hs13qb1ach2s" path="res://Assets/textures/Prototype Textures/Dark/BlackGround.tres" id="1_a5yh3"]
+[ext_resource type="Material" uid="uid://den6sfuvow47k" path="res://Assets/textures/Prototype Textures/Light/WhiteBlock.tres" id="2_g417j"]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D"]
+use_collision = true
+
+[node name="Ground" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.5, 0, 14)
+size = Vector3(600, 1, 600)
+material = ExtResource("1_a5yh3")
+
+[node name="StartWhiteCeiling4" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(0.9, 0, 0, 0, 2.25, 0, 0, 0, 0.9, -16.2, 0, -50)
+operation = 2
+size = Vector3(30, 1, 30)
+
+[node name="StartWhiteWall" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.99594, -1)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.99594, -16)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.99594, -31)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall4" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.99594, -46)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall5" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.99594, -61)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall6" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.99594, -76)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall7" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 7.99594, -1)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall8" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 7.99594, -16)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall9" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 7.99594, -31)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall10" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 7.99594, -46)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall11" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 7.99594, -61)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteWall12" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 7.99594, -76)
+size = Vector3(1, 15, 15)
+material = ExtResource("2_g417j")
+
+[node name="StartWhiteCeiling" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3, 15, -6)
+size = Vector3(30, 1, 30)
+
+[node name="StartWhiteCeiling2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3, 15, -36)
+size = Vector3(30, 1, 30)
+
+[node name="StartWhiteCeiling3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3, 15, -66)
+size = Vector3(30, 1, 30)

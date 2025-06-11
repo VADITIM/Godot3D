@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 
 public partial class UIAnimations : Node
@@ -38,7 +37,7 @@ public partial class UIAnimations : Node
         {
             originalPositions[i] = animatableObjects[i].Position;
             originalScales[i] = animatableObjects[i].Scale;
-            originalColors[i] = animatableObjects[i].Modulate;
+            // originalColors[i] = animatableObjects[i].Modulate;
             currentPositions[i] = originalPositions[i];
             targetPositions[i] = originalPositions[i];
         }
@@ -55,7 +54,7 @@ public partial class UIAnimations : Node
         for (int i = 0; i < animatableObjects.Length; i++)
         {
             currentPositions[i] = animatableObjects[i].Position;
-            targetPositions[i] = animatableObjects[i].Position; 
+            targetPositions[i] = animatableObjects[i].Position;
         }
     }
 
@@ -82,7 +81,7 @@ public partial class UIAnimations : Node
                 positionTween.TweenCallback(Callable.From(StartWallRunVibration));
 
             var colorTween = CreateSmoothTween($"color_{i}");
-            colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Cyan * 1.4f, animationSpeed);
+            // colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Cyan * 1.4f, animationSpeed);
 
             var scaleTween = CreateSmoothTween($"scale_{i}");
             scaleTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.15f, animationSpeed);
@@ -115,8 +114,8 @@ public partial class UIAnimations : Node
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
 
             var colorTween = CreateSmoothTween($"color_{i}");
-            colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Orange * 1.6f, 0.1f);
-            colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Orange * 1.2f, 0.3f);
+            // colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Orange * 1.6f, 0.1f);
+            // colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Orange * 1.2f, 0.3f);
 
             var posTween = CreateSmoothTween($"position_{i}");
             posTween.TweenProperty(animatableObjects[i], "position", originalPositions[i] + new Vector2(0, -30), 0.15f)
@@ -151,7 +150,7 @@ public partial class UIAnimations : Node
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Spring);
 
             var colorTween = CreateSmoothTween($"color_{i}");
-            colorTween.Parallel().TweenProperty(animatableObjects[i], "modulate", Colors.LimeGreen * 1.3f, animationSpeed);
+            // colorTween.Parallel().TweenProperty(animatableObjects[i], "modulate", Colors.LimeGreen * 1.3f, animationSpeed);
         }
     }
 
@@ -201,7 +200,7 @@ public partial class UIAnimations : Node
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Cubic);
             fallTween.Parallel().TweenProperty(animatableObjects[i], "position", fallTargetPosition, fallDuration)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Cubic);
-            fallTween.Parallel().TweenProperty(animatableObjects[i], "modulate", Colors.OrangeRed * 1.3f, 0.3f);
+            // fallTween.Parallel().TweenProperty(animatableObjects[i], "modulate", Colors.OrangeRed * 1.3f, 0.3f);
         }
 
         var fallTimerTween = CreateSmoothTween("fallTimer");
@@ -236,8 +235,8 @@ public partial class UIAnimations : Node
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Bounce);
 
             var bounceColorTween = CreateSmoothTween($"fallBounceColor_{i}");
-            bounceColorTween.TweenProperty(animatableObjects[i], "modulate", Colors.White * 1.8f, 0.08f);
-            bounceColorTween.TweenProperty(animatableObjects[i], "modulate", originalColors[i], 0.42f);
+            // bounceColorTween.TweenProperty(animatableObjects[i], "modulate", Colors.White * 1.8f, 0.08f);
+            // bounceColorTween.TweenProperty(animatableObjects[i], "modulate", originalColors[i], 0.42f);
         }
 
         var transitionTween = CreateSmoothTween("bounceTransition");
@@ -253,7 +252,7 @@ public partial class UIAnimations : Node
                 MoveAnimation();
                 break;
             case "Dodging":
-                MoveAnimation(); 
+                MoveAnimation();
                 break;
             case "Idle":
                 IdleAnimation();
@@ -285,7 +284,7 @@ public partial class UIAnimations : Node
             pulseTween.SetLoops();
 
             var colorTween = CreateSmoothTween($"color_{i}");
-            colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Purple * 1.3f, animationSpeed);
+            // colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Purple * 1.3f, animationSpeed);
         }
     }
 
@@ -301,7 +300,7 @@ public partial class UIAnimations : Node
             posTween.TweenProperty(animatableObjects[i], "position", targetPositions[i], transitionSpeed);
 
             var colorTween = CreateSmoothTween($"color_{i}");
-            colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Purple * 1.3f, animationSpeed);
+            // colorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Purple * 1.3f, animationSpeed);
 
             var pulseTween = CreateSmoothTween($"pulse_{i}");
             pulseTween.TweenProperty(animatableObjects[i], "scale", originalScales[i] * 1.2f, 0.3f);
@@ -334,7 +333,7 @@ public partial class UIAnimations : Node
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
 
             var colorTween = CreateSmoothTween($"color_{i}");
-            colorTween.TweenProperty(animatableObjects[i], "modulate", originalColors[i], animationSpeed * 2);
+            // colorTween.TweenProperty(animatableObjects[i], "modulate", originalColors[i], animationSpeed * 2);
 
             var scaleTween = CreateSmoothTween($"scale_{i}");
             scaleTween.TweenProperty(animatableObjects[i], "scale", originalScales[i], animationSpeed);
@@ -367,7 +366,7 @@ public partial class UIAnimations : Node
             var resetTween = CreateSmoothTween($"reset_{i}");
             resetTween.TweenProperty(animatableObjects[i], "scale", originalScales[i], transitionSpeed);
             resetTween.Parallel().TweenProperty(animatableObjects[i], "position", targetPositions[i], transitionSpeed);
-            resetTween.Parallel().TweenProperty(animatableObjects[i], "modulate", originalColors[i], transitionSpeed);
+            // resetTween.Parallel().TweenProperty(animatableObjects[i], "modulate", originalColors[i], transitionSpeed);
         }
     }
     #endregion
@@ -402,14 +401,14 @@ public partial class UIAnimations : Node
 
     private void SetObjectColor(int index, Color color)
     {
-        animatableObjects[index].Modulate = color;
+        // animatableObjects[index].Modulate = color;
     }
 
     private void SetAllObjectsColor(Color color)
     {
         for (int i = 0; i < animatableObjects.Length; i++)
         {
-            animatableObjects[i].Modulate = color;
+            // animatableObjects[i].Modulate = color;
         }
     }
 
@@ -470,7 +469,7 @@ public partial class UIAnimations : Node
     private void ShakeFromTargetWithDynamicIntensity(int index)
     {
         float currentSpeed = Components.Instance.Movement.currentSpeed;
-        float normalizedSpeed = Mathf.Clamp(currentSpeed / 300f, 0f, 1f); 
+        float normalizedSpeed = Mathf.Clamp(currentSpeed / 300f, 0f, 1f);
         float intensity = normalizedSpeed * 10f;
 
         Vector2 shakeOffset = new Vector2(intensity, intensity);

@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class SpeedDisplay : Label
 {
@@ -23,7 +22,7 @@ public partial class SpeedDisplay : Label
                 movementComponent = targetNode as Movement;
             }
         }
-        
+
         if (movementComponent == null && Components.Instance != null && Components.Instance.Player != null)
         {
             movementComponent = Components.Instance.Player.GetNodeOrNull<Movement>("Movement");
@@ -33,7 +32,7 @@ public partial class SpeedDisplay : Label
     public override void _Process(double delta)
     {
         updateTimer += (float)delta;
-        
+
         if (updateTimer >= updateInterval && movementComponent != null)
         {
             updateTimer = 0;
@@ -44,7 +43,7 @@ public partial class SpeedDisplay : Label
     private void UpdateSpeedDisplay()
     {
         float speedValue = movementComponent.currentSpeed;
-        
+
         if (roundValue)
         {
             string format = $"F{decimalPlaces}";
@@ -55,7 +54,7 @@ public partial class SpeedDisplay : Label
             Text = $"{prefix}{speedValue}{suffix}";
         }
     }
-    
+
     // Method to manually set the Movement component if needed
     public void SetMovementComponent(Movement movement)
     {

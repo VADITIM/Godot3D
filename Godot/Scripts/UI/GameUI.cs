@@ -1,6 +1,5 @@
 using Godot;
-using System;
-using System.Collections.Generic;
+
 public partial class GameUI : Control
 {
     public static GameUI Instance { get; private set; }

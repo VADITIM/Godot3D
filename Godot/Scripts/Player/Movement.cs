@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 public partial class Movement : Node
@@ -6,7 +5,7 @@ public partial class Movement : Node
     public float currentSpeed = 0.0f;
     [Export] public float maxSpeed = 28.0f;
     [Export] public float maxSprintSpeed = 28.0f;
-    [Export] public float maxAirSpeed = 500.0f;
+    [Export] public float maxAirSpeed = 100.0f;
     [Export] public float maxWallSpeed = 70.0f;
 
     [Export] public float groundAcceleration = 1.5f;
@@ -87,9 +86,7 @@ public partial class Movement : Node
                 velocity.Y += jumpForce * jumpBoostMultiplier * delta;
             }
             else
-            {
                 isJumpBoosting = false;
-            }
         }
 
         // isSprinting = Input.IsActionPressed("sprint"); // Removed - replaced with dodging system

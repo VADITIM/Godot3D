@@ -1,29 +1,22 @@
 using Godot;
-using System;
 
 public partial class Components : Node
 {
     public static Components Instance { get; private set; }
 
-    public WallManager WallManager;
-    public Player Player;
-    public Camera Camera;
-    public Movement Movement;
-    public StateMachine StateMachine;
-    public GameUI GameUI;
-    public UIAnimations UIAnimations;
+    public Camera Camera                => Player.GetNode<Camera>("/root/Main/Player/Components/Camera");
+
+    public Player Player                => GetNode<Player>("/root/Main/Player");    
+    public Movement Movement            => Player.GetNode<Movement>("Components/Movement");
+    public WallManager WallManager      => GetNode<WallManager>("/root/Main/Player/Components/WallManager");
+    public StateMachine StateMachine    => Player.GetNode<StateMachine>("Components/StateMachine");
+    public Health Health                => Player.GetNode<Health>("Components/Health");
+
+    public GameUI GameUI                => GetNode<GameUI>("/root/Main/Game UI");
+    public UIAnimations UIAnimations    => GameUI.GetNode<UIAnimations>("UIAnimations");
 
     public override void _Ready()
     {
         Instance = this;
-
-        Player = GetNode<Player>("/root/Main/Player");
-        WallManager = GetNode<WallManager>("/root/Main/Player/Components/WallManager");
-        Camera = GetNode<Camera>("/root/Main/Player/Components/Camera");
-        Movement = GetNode<Movement>("/root/Main/Player/Components/Movement");
-        StateMachine = GetNode<StateMachine>("/root/Main/Player/Components/StateMachine");
-
-        GameUI = GetNode<GameUI>("/root/Main/Game UI");
-        UIAnimations = GetNode<UIAnimations>("/root/Main/Game UI/UIAnimations");
     }
 }

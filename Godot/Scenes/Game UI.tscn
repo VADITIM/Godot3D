@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cex06vcc12y80"]
+[gd_scene load_steps=13 format=3 uid="uid://cex06vcc12y80"]
 
 [ext_resource type="Script" uid="uid://4pakvi4e546j" path="res://Scripts/UI/GameUI.cs" id="1_58ppc"]
 [ext_resource type="Script" uid="uid://cth88od8svf8y" path="res://Scripts/UI/SpeedDisplay.cs" id="1_j13iv"]
@@ -20,6 +20,34 @@ shadow_size = 7
 shadow_color = Color(0, 0, 0, 0.34902)
 shadow_offset = Vector2(5, 5)
 
+[sub_resource type="LabelSettings" id="LabelSettings_qe4kh"]
+font = ExtResource("3_6iude")
+font_size = 60
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6iude"]
+bg_color = Color(0.069252, 0.0746165, 0.0698965, 1)
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+expand_margin_top = 8.0
+expand_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qe4kh"]
+bg_color = Color(0.311947, 0.691734, 0.429537, 1)
+expand_margin_top = 8.0
+expand_margin_right = 8.0
+expand_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dd0xs"]
+bg_color = Color(0.0705882, 0.0745098, 0.0705882, 1)
+expand_margin_top = 8.0
+expand_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2rnr3"]
+bg_color = Color(0.874392, 0.452796, 0.19914, 1)
+expand_margin_top = 8.0
+expand_margin_right = 8.0
+expand_margin_bottom = 8.0
+
 [node name="Game UI" type="Control"]
 layout_direction = 1
 layout_mode = 3
@@ -35,16 +63,17 @@ script = ExtResource("1_58ppc")
 
 [node name="UIAnimations" type="Node" parent="." node_paths=PackedStringArray("animatableObjects")]
 script = ExtResource("2_0hk2f")
-animatableObjects = [NodePath("../Speed Label"), NodePath("../State Label"), NodePath("../Score Label")]
+animatableObjects = [NodePath("../Speed Label"), NodePath("../State Label"), NodePath("../Score Label"), NodePath("../Panel")]
 
 [node name="Speed Label" type="Label" parent="."]
 layout_direction = 1
 layout_mode = 1
 offset_left = 66.0
-offset_top = 58.0
-offset_right = 266.0
-offset_bottom = 111.0
-pivot_offset = Vector2(0, 53)
+offset_top = 57.0
+offset_right = 205.0
+offset_bottom = 110.0
+rotation = -0.0523599
+pivot_offset = Vector2(100, 26.5)
 text = "speed: "
 label_settings = SubResource("LabelSettings_58ppc")
 vertical_alignment = 1
@@ -84,6 +113,64 @@ offset_top = 58.0
 offset_right = -64.0
 offset_bottom = 111.0
 grow_horizontal = 0
-pivot_offset = Vector2(254, 53)
+rotation = 0.0523599
+pivot_offset = Vector2(127, 26.5)
 text = "Score: 42069"
 label_settings = SubResource("LabelSettings_6iude")
+
+[node name="Panel" type="Panel" parent="."]
+self_modulate = Color(1, 1, 1, 0.184314)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 962.0
+offset_top = -142.0
+offset_right = 1240.0
+offset_bottom = -49.0
+grow_vertical = 0
+pivot_offset = Vector2(139, 46.5)
+
+[node name="HP" type="Label" parent="Panel"]
+visible = false
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 139.0
+grow_vertical = 2
+pivot_offset = Vector2(23.5, 46.5)
+text = "HP"
+label_settings = SubResource("LabelSettings_qe4kh")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HealthSlider" type="HSlider" parent="Panel"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -19.5
+offset_bottom = -3.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(139, 8)
+theme_override_styles/slider = SubResource("StyleBoxFlat_6iude")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_qe4kh")
+max_value = 200.0
+value = 200.0
+
+[node name="ArmorSlider" type="HSlider" parent="Panel"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = 18.5
+offset_bottom = 34.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(139, 8)
+theme_override_styles/slider = SubResource("StyleBoxFlat_dd0xs")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_2rnr3")
+value = 100.0
