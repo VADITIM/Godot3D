@@ -1,5 +1,5 @@
-using Godot;
 using System;
+using Godot;
 
 public partial class Health : Node
 {
@@ -18,16 +18,31 @@ public partial class Health : Node
     public float armorRegenDelay = 3f;
     private float healthRegenTimer = 0f;
     private float armorRegenTimer = 0f;
+    private bool takenDamage = false;
+
+    private StyleBoxEmpty emptyGrabberStyle = new StyleBoxEmpty();
+    private StyleBox armorGrabberStyle;
+    private StyleBox healthGrabberStyle;
+    private bool stylesInitialized = false;
 
     public override void _Ready()
     {
         health = maxHealth;
         armor = maxArmor;
 
-        healthSlider = GetNode<HSlider>("/root/Main/Game UI/Panel/HealthSlider");
-        armorSlider = GetNode<HSlider>("/root/Main/Game UI/Panel/ArmorSlider");
+        SaveGrabberStyle();
+        UpdateGrabberVisibility();
     }
 
+    private void SaveGrabberStyle()
+    {
+        if (healthSlider != null && armorSlider != null)
+        {
+            healthGrabberStyle = healthSlider.GetThemeStylebox("grabber_area");
+            armorGrabberStyle = armorSlider.GetThemeStylebox("grabber_area");
+            stylesInitialized = true;
+        }
+    }
 
     public override void _Process(double delta)
     {
@@ -50,9 +65,7 @@ public partial class Health : Node
             {
                 health += healthRegenRate * (float)delta;
                 if (health > maxHealth)
-                {
                     health = maxHealth;
-                }
             }
         }
 
@@ -63,29 +76,27 @@ public partial class Health : Node
             {
                 armor += armorRegenRate * (float)delta;
                 if (armor > maxArmor)
-                {
                     armor = maxArmor;
-                }
             }
         }
+
+        UpdateGrabberVisibility();
     }
 
     private void UpdateSliders()
     {
-        healthSlider.MaxValue = maxHealth;
-        armorSlider.MaxValue = maxArmor;
-
         if (healthSlider != null)
         {
+            healthSlider.MaxValue = maxHealth;
             healthSlider.Value = health;
         }
+
         if (armorSlider != null)
         {
+            armorSlider.MaxValue = maxArmor;
             armorSlider.Value = armor;
         }
     }
-
-    private bool takenDamage = false;
 
     private void RegeneTimer()
     {
@@ -108,14 +119,10 @@ public partial class Health : Node
             health -= damage / 10f;
 
             if (armor < 0)
-            {
                 armor = 0;
-            }
 
             if (remainingDamage > 0)
-            {
                 health -= remainingDamage;
-            }
         }
         else
         {
@@ -123,9 +130,35 @@ public partial class Health : Node
         }
 
         if (health < 0)
-        {
             health = 0;
-        }
+
+        UpdateGrabberVisibility();
     }
 
+    private void UpdateGrabberVisibility()
+    {
+        if (!stylesInitialized)
+        {
+            SaveGrabberStyle();
+            if (!stylesInitialized) return;
+        }
+
+        if (health <= 0)
+        {
+            healthSlider.AddThemeStyleboxOverride("grabber_area", emptyGrabberStyle);
+        }
+        else
+        {
+            healthSlider.AddThemeStyleboxOverride("grabber_area", healthGrabberStyle);
+        }
+
+        if (armor <= 0)
+        {
+            armorSlider.AddThemeStyleboxOverride("grabber_area", emptyGrabberStyle);
+        }
+        else
+        {
+            armorSlider.AddThemeStyleboxOverride("grabber_area", armorGrabberStyle);
+        }
+    }
 }
