@@ -110,6 +110,12 @@ public partial class Health : Node
 
     private void TakeDamage(float damage)
     {
+        // Apply damage animation without interrupting state animations
+        if (Components.Instance?.UIAnimations != null)
+        {
+            Components.Instance.UIAnimations.TakeDamageAnimation();
+        }
+
         takenDamage = true;
 
         if (armor > 0)

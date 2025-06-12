@@ -15,6 +15,7 @@ public partial class UIAnimations : Node
     private Vector2[] currentPositions;
     private Vector2[] targetPositions;
     private Dictionary<string, Tween> activeTweens = new Dictionary<string, Tween>();
+    private Dictionary<string, Tween> damageEffectTweens = new Dictionary<string, Tween>();
     private string previousState = "";
 
     public bool IsFalling() => isFalling;
@@ -57,6 +58,97 @@ public partial class UIAnimations : Node
             targetPositions[i] = animatableObjects[i].Position;
         }
     }
+    // --------------------------------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------------------------------
+    #region TAKE DAMAGE
+
+    public void TakeDamageAnimation()
+    {
+        StopDamageEffects();
+        Components.Instance.Camera.ShakeCamera(.025f, 0.2f);
+
+        for (int i = 0; i < animatableObjects.Length; i++)
+        {
+            var damageShakeTween = CreateDamageEffectTween($"damageShake_{i}");
+            int objectIndex = i;
+
+            damageShakeTween.TweenMethod(Callable.From<float>((_) => ApplyDamageShake(objectIndex)),
+                0.0f, 1.0f, 0.05f);
+            damageShakeTween.TweenMethod(Callable.From<float>((_) => ApplyDamageShake(objectIndex)),
+                0.0f, 1.0f, 0.05f);
+            damageShakeTween.TweenMethod(Callable.From<float>((_) => ApplyDamageShake(objectIndex)),
+                0.0f, 1.0f, 0.05f);
+            damageShakeTween.TweenMethod(Callable.From<float>((_) => ApplyDamageShake(objectIndex)),
+                0.0f, 1.0f, 0.05f);
+
+            // Create damage color flash effect
+            var damageColorTween = CreateDamageEffectTween($"damageColor_{i}");
+            Color currentColor = animatableObjects[i].Modulate;
+            damageColorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Red * 1.5f, 0.08f)
+                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+            damageColorTween.TweenProperty(animatableObjects[i], "modulate", currentColor, 0.12f)
+                .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        }
+
+        // Auto-clear damage effects after animation completes
+        var damageClearTween = CreateDamageEffectTween("damageClear");
+        damageClearTween.TweenInterval(0.4f);
+        damageClearTween.TweenCallback(Callable.From(StopDamageEffects));
+    }
+
+    private void ApplyDamageShake(int index)
+    {
+        Vector2 basePosition = GetCurrentAnimatedPosition(index);
+        var randomOffset = new Vector2(
+            (float)(GD.Randf() - 0.5f) * 8f,
+            (float)(GD.Randf() - 0.5f) * 8f
+        );
+        animatableObjects[index].Position = basePosition + randomOffset;
+    }
+
+    private Vector2 GetCurrentAnimatedPosition(int index)
+    {
+        if (isFalling)
+        {
+            return animatableObjects[index].Position;
+        }
+
+        if (index < targetPositions.Length)
+            return targetPositions[index];
+        return originalPositions[index];
+    }
+
+    private Vector2 GetCurrentTargetPosition(int index)
+    {
+        return GetCurrentAnimatedPosition(index);
+    }
+
+    private Tween CreateDamageEffectTween(string name)
+    {
+        if (damageEffectTweens.ContainsKey(name))
+        {
+            damageEffectTweens[name]?.Kill();
+        }
+
+        var tween = CreateTween();
+        tween.SetEase(Tween.EaseType.Out);
+        tween.SetTrans(Tween.TransitionType.Cubic);
+        damageEffectTweens[name] = tween;
+
+        return tween;
+    }
+
+    private void StopDamageEffects()
+    {
+        foreach (var tween in damageEffectTweens.Values)
+        {
+            tween?.Kill();
+        }
+        damageEffectTweens.Clear();
+    }
+
+    #endregion
 
     // --------------------------------------------------------------------------------------------------------------------------------
     // --------------------------------------------------------------------------------------------------------------------------------
@@ -395,6 +487,9 @@ public partial class UIAnimations : Node
             tween?.Kill();
         }
         activeTweens.Clear();
+
+        // Don't stop damage effects when stopping main animations
+        // They should be independent
     }
 
     private void SetObjectColor(int index, Color color)
