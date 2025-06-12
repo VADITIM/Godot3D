@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b43fm07hjr3d7"]
 
-[ext_resource type="Material" uid="uid://hs13qb1ach2s" path="res://Assets/textures/Prototype Textures/Dark/BlackGround.tres" id="1_a5yh3"]
-[ext_resource type="Material" uid="uid://den6sfuvow47k" path="res://Assets/textures/Prototype Textures/Light/WhiteBlock.tres" id="2_g417j"]
+[ext_resource type="Material" uid="uid://hs13qb1ach2s" path="res://Assets/Textures/Prototype Textures/Dark/BlackGround.tres" id="1_a5yh3"]
+[ext_resource type="Material" uid="uid://den6sfuvow47k" path="res://Assets/Textures/Prototype Textures/Light/WhiteBlock.tres" id="2_g417j"]
 
 [node name="CSGCombiner3D" type="CSGCombiner3D"]
 use_collision = true

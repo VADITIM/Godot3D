@@ -1,0 +1,26 @@
+[gd_scene load_steps=7 format=3 uid="uid://mkag7wgy2fpm"]
+
+[ext_resource type="Script" uid="uid://c3dq2ex33iucc" path="res://Scripts/Components.cs" id="1_0s18h"]
+[ext_resource type="Script" uid="uid://r54lv0ixd2lr" path="res://Scripts/Player/WallManager.cs" id="2_6205l"]
+[ext_resource type="Script" uid="uid://dmtfmxgv6dw8v" path="res://Scripts/Player/Camera.cs" id="3_j41yy"]
+[ext_resource type="Script" uid="uid://clsv5pv3pu4rd" path="res://Scripts/Player/Movement.cs" id="4_bhaki"]
+[ext_resource type="Script" uid="uid://kxysfmxqtjfv" path="res://Scripts/StateMachine.cs" id="5_ruoxk"]
+[ext_resource type="Script" uid="uid://cbb8bbilxtf4u" path="res://Scripts/Player/Health.cs" id="6_mj16m"]
+
+[node name="Components" type="Node"]
+script = ExtResource("1_0s18h")
+
+[node name="WallManager" type="Node" parent="."]
+script = ExtResource("2_6205l")
+
+[node name="Camera" type="Node" parent="."]
+script = ExtResource("3_j41yy")
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("4_bhaki")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("5_ruoxk")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("6_mj16m")

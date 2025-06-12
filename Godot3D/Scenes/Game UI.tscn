@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://cex06vcc12y80"]
+[gd_scene load_steps=17 format=3 uid="uid://cex06vcc12y80"]
 
 [ext_resource type="Script" uid="uid://4pakvi4e546j" path="res://Scripts/UI/GameUI.cs" id="1_58ppc"]
 [ext_resource type="Script" uid="uid://cth88od8svf8y" path="res://Scripts/UI/SpeedDisplay.cs" id="1_j13iv"]
 [ext_resource type="Script" uid="uid://cnsr56x3565tr" path="res://Scripts/UI/UIAnimations.cs" id="2_0hk2f"]
 [ext_resource type="FontFile" uid="uid://yjjh8gq82fe7" path="res://Assets/Fonts/Shownan.ttf" id="3_6iude"]
 [ext_resource type="Script" uid="uid://bwa3akbskft8m" path="res://Scripts/UI/StateDisplay.cs" id="3_wmu2t"]
+[ext_resource type="Shader" uid="uid://chhcn1ifj0w0e" path="res://Scripts/Shaders/Curve.gdshader" id="7_dd0xs"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_58ppc"]
 font = ExtResource("3_6iude")
@@ -20,43 +21,58 @@ shadow_size = 7
 shadow_color = Color(0, 0, 0, 0.34902)
 shadow_offset = Vector2(5, 5)
 
-[sub_resource type="LabelSettings" id="LabelSettings_qe4kh"]
-font = ExtResource("3_6iude")
-font_size = 60
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2rnr3"]
+shader = ExtResource("7_dd0xs")
+shader_parameter/strength = 0.05
 
 [sub_resource type="MeshTexture" id="MeshTexture_6iude"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6iude"]
 bg_color = Color(0.069252, 0.0746165, 0.0698965, 1)
+corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 expand_margin_top = 8.0
 expand_margin_bottom = 8.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qe4kh"]
 bg_color = Color(0.311947, 0.691734, 0.429537, 1)
+corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 expand_margin_top = 8.0
 expand_margin_bottom = 8.0
+shadow_color = Color(0, 0, 0, 0.392157)
 shadow_size = 5
 shadow_offset = Vector2(7, 7)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dd0xs"]
+shader = ExtResource("7_dd0xs")
+shader_parameter/strength = 0.05
 
 [sub_resource type="MeshTexture" id="MeshTexture_qe4kh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dd0xs"]
 bg_color = Color(0.0705882, 0.0745098, 0.0705882, 1)
+corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 expand_margin_top = 8.0
 expand_margin_bottom = 8.0
+shadow_color = Color(0, 0, 0, 0.392157)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2rnr3"]
 bg_color = Color(0.874392, 0.452796, 0.19914, 1)
+corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 expand_margin_top = 8.0
 expand_margin_bottom = 8.0
+shadow_color = Color(0, 0, 0, 0.392157)
 shadow_size = 5
 shadow_offset = Vector2(7, 7)
 
@@ -72,14 +88,16 @@ pivot_offset = Vector2(640, 360)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_58ppc")
+maxFallDistance = 60.0
 
 [node name="UIAnimations" type="Node" parent="." node_paths=PackedStringArray("animatableObjects")]
 script = ExtResource("2_0hk2f")
-animatableObjects = [NodePath("../Speed Label"), NodePath("../State Label"), NodePath("../Score Label"), NodePath("../Health & Armor")]
+animatableObjects = [NodePath("../Labels/Speed Label"), NodePath("../Labels/State Label"), NodePath("../Labels/Score Label"), NodePath("../Health & Armor")]
 
-[node name="Speed Label" type="Label" parent="."]
+[node name="Labels" type="Node" parent="."]
+
+[node name="Speed Label" type="Label" parent="Labels"]
 layout_direction = 1
-layout_mode = 1
 offset_left = 66.0
 offset_top = 57.0
 offset_right = 205.0
@@ -93,9 +111,9 @@ script = ExtResource("1_j13iv")
 prefix = ""
 suffix = "m/s"
 
-[node name="State Label" type="Label" parent="."]
+[node name="State Label" type="Label" parent="Labels"]
+visible = false
 layout_direction = 1
-layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -114,9 +132,8 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("3_wmu2t")
 
-[node name="Score Label" type="Label" parent="."]
+[node name="Score Label" type="Label" parent="Labels"]
 layout_direction = 1
-layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -131,32 +148,21 @@ text = "Score: 42069"
 label_settings = SubResource("LabelSettings_6iude")
 
 [node name="Health & Armor" type="Panel" parent="."]
-self_modulate = Color(1, 1, 1, 0.184314)
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 962.0
-offset_top = -99.0
+offset_top = -115.0
 offset_right = 1240.0
-offset_bottom = -49.0
+offset_bottom = -65.0
 grow_vertical = 0
+rotation = 0.0261799
 pivot_offset = Vector2(139, 46.5)
 
-[node name="HP" type="Label" parent="Health & Armor"]
-visible = false
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_right = 139.0
-grow_vertical = 2
-pivot_offset = Vector2(23.5, 46.5)
-text = "HP"
-label_settings = SubResource("LabelSettings_qe4kh")
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="HealthSlider" type="HSlider" parent="Health & Armor"]
+material = SubResource("ShaderMaterial_2rnr3")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -173,6 +179,7 @@ editable = false
 scrollable = false
 
 [node name="ArmorSlider" type="HSlider" parent="Health & Armor"]
+material = SubResource("ShaderMaterial_dd0xs")
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -181,6 +188,7 @@ anchor_bottom = 1.0
 offset_top = -16.0
 grow_horizontal = 2
 grow_vertical = 0
+scale = Vector2(0.920005, 1)
 pivot_offset = Vector2(139, 8)
 theme_override_icons/grabber_disabled = SubResource("MeshTexture_qe4kh")
 theme_override_styles/slider = SubResource("StyleBoxFlat_dd0xs")

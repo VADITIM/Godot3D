@@ -1,11 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://co1hejhaeo4lj"]
+[gd_scene load_steps=10 format=3 uid="uid://co1hejhaeo4lj"]
 
 [ext_resource type="PackedScene" uid="uid://dd4v11rqiyga" path="res://Scenes/Player.tscn" id="1_r150o"]
-[ext_resource type="Texture2D" uid="uid://bivn0beummfyv" path="res://Assets/textures/Prototype Textures/Green/texture_09.png" id="3_rgh2o"]
-[ext_resource type="PackedScene" uid="uid://bcnsrkmrh5d33" path="res://Scenes/test.tscn" id="5_pbw6q"]
-[ext_resource type="Texture2D" uid="uid://b4rf42v7gr025" path="res://Assets/textures/Prototype Textures/Red/texture_07.png" id="6_jw32o"]
+[ext_resource type="Texture2D" uid="uid://bivn0beummfyv" path="res://Assets/Textures/Prototype Textures/Green/texture_09.png" id="3_rgh2o"]
 [ext_resource type="PackedScene" uid="uid://cex06vcc12y80" path="res://Scenes/Game UI.tscn" id="6_v1gob"]
-[ext_resource type="PackedScene" uid="uid://b43fm07hjr3d7" path="res://Scenes/csg_combiner_3d.tscn" id="7_jw32o"]
 [ext_resource type="PackedScene" uid="uid://dfbckvn383ofn" path="res://Scenes/box.tscn" id="8_50glp"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kln2b"]
@@ -25,21 +22,12 @@ uv1_scale = Vector3(0.03, 0.03, 0.03)
 uv1_triplanar = true
 texture_filter = 0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_50glp"]
-albedo_texture = ExtResource("6_jw32o")
-
 [node name="Main" type="Node3D"]
 
 [node name="Game UI" parent="." instance=ExtResource("6_v1gob")]
 
-[node name="Speed Label" parent="Game UI" index="1"]
-movementNodePath = NodePath("../../Player/Components/Movement")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.207902, -0.305046, 0.929368, 0.705731, 0.611107, 0.358457, -0.677289, 0.730407, 0.0882298, 378.424, 141.733, 123.997)
-light_volumetric_fog_energy = 0.205
-shadow_enabled = true
-directional_shadow_max_distance = 400.0
+[node name="Speed Label" parent="Game UI/Labels" index="0"]
+movementNodePath = NodePath("../../../Player/Components/Movement")
 
 [node name="Player" parent="." instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 255.449, 2.54046, 109.57)
@@ -53,12 +41,6 @@ armorSlider = NodePath("../../../Game UI/Health & Armor/ArmorSlider")
 
 [node name="Camera" parent="Player" index="3"]
 transform = Transform3D(0.994377, 0, 0, 0, 0.994377, 0, 0, 0, 0.994377, -0.0512466, 0.390877, -0.0405502)
-
-[node name="OmniLight3D" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.1305, 7.652, 35.6075)
-light_energy = 10.0
-light_size = 5.0
-omni_range = 21.5124
 
 [node name="Environment" type="Node" parent="."]
 
@@ -1075,10 +1057,18 @@ use_collision = true
 size = Vector3(10000, 1, 10000)
 material = SubResource("StandardMaterial3D_v1gob")
 
-[node name="Blockout" parent="Environment" instance=ExtResource("5_pbw6q")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 215.052, 1.99995, -2.4446)
+[node name="CSGBox3D27" parent="Environment" instance=ExtResource("8_50glp")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 259.414, 5.6, 124.228)
 
-[node name="OmniLight" type="OmniLight3D" parent="."]
+[node name="Lights" type="Node" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lights"]
+transform = Transform3D(-0.207902, -0.305046, 0.929367, 0.705731, 0.611107, 0.358458, -0.677289, 0.730407, 0.0882301, 378.424, 141.733, 123.997)
+light_volumetric_fog_energy = 0.205
+shadow_enabled = true
+directional_shadow_max_distance = 400.0
+
+[node name="OmniLight" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 264, 15, 135)
 light_color = Color(0.856494, 3.65794e-06, 8.66354e-07, 1)
 light_energy = 8.2
@@ -1086,16 +1076,11 @@ light_indirect_energy = 1.22
 shadow_enabled = true
 omni_range = 100.0
 
-[node name="CSGBox3D27" parent="." instance=ExtResource("8_50glp")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 259.414, 5.6, 124.228)
-
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 0.21, 309.212, 3, 74.34)
-size = Vector3(2.25293, 1, 1)
-material = SubResource("StandardMaterial3D_50glp")
-
-[node name="CSGCombiner3D" parent="." instance=ExtResource("7_jw32o")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 222, 6, 537)
+[node name="OmniLight3D" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.1305, 7.652, 35.6075)
+light_energy = 10.0
+light_size = 5.0
+omni_range = 21.5124
 
 [editable path="Game UI"]
 [editable path="Player"]

@@ -12,7 +12,7 @@ public partial class Health : Node
     [Export] public HSlider healthSlider;
     [Export] public HSlider armorSlider;
 
-    public float healthRegenRate = 0.5f;
+    public float healthRegenRate = 2.5f;
     public float armorRegenRate = 15.5f;
     public float healthRegenDelay = 15f;
     public float armorRegenDelay = 3f;
@@ -47,16 +47,31 @@ public partial class Health : Node
     public override void _Process(double delta)
     {
         UpdateSliders();
-        Regeneration(delta);
+        StartRegeneration(delta);
         RegeneTimer();
 
         if (Input.IsActionJustPressed("damage"))
         {
-            TakeDamage(10f);
+            TakeDamage(30f);
         }
     }
 
-    public void Regeneration(double delta)
+    private void UpdateSliders()
+    {
+        if (healthSlider != null)
+        {
+            healthSlider.MaxValue = maxHealth;
+            healthSlider.Value = health;
+        }
+
+        if (armorSlider != null)
+        {
+            armorSlider.MaxValue = maxArmor;
+            armorSlider.Value = armor;
+        }
+    }
+
+    public void StartRegeneration(double delta)
     {
         if (health < maxHealth)
         {
@@ -83,21 +98,6 @@ public partial class Health : Node
         UpdateGrabberVisibility();
     }
 
-    private void UpdateSliders()
-    {
-        if (healthSlider != null)
-        {
-            healthSlider.MaxValue = maxHealth;
-            healthSlider.Value = health;
-        }
-
-        if (armorSlider != null)
-        {
-            armorSlider.MaxValue = maxArmor;
-            armorSlider.Value = armor;
-        }
-    }
-
     private void RegeneTimer()
     {
         if (takenDamage)
@@ -114,9 +114,10 @@ public partial class Health : Node
 
         if (armor > 0)
         {
+            int randomRange = (int)GD.RandRange(5, 10);
             float remainingDamage = damage - armor;
             armor -= damage;
-            health -= damage / 10f;
+            health -= damage / randomRange;
 
             if (armor < 0)
                 armor = 0;
