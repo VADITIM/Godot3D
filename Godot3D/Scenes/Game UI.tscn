@@ -1,10 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://cex06vcc12y80"]
+[gd_scene load_steps=19 format=3 uid="uid://cex06vcc12y80"]
 
 [ext_resource type="Script" uid="uid://4pakvi4e546j" path="res://Scripts/UI/GameUI.cs" id="1_58ppc"]
 [ext_resource type="Script" uid="uid://cth88od8svf8y" path="res://Scripts/UI/SpeedDisplay.cs" id="1_j13iv"]
 [ext_resource type="Script" uid="uid://cnsr56x3565tr" path="res://Scripts/UI/UIAnimations.cs" id="2_0hk2f"]
 [ext_resource type="FontFile" uid="uid://yjjh8gq82fe7" path="res://Assets/Fonts/Shownan.ttf" id="3_6iude"]
 [ext_resource type="Script" uid="uid://bwa3akbskft8m" path="res://Scripts/UI/StateDisplay.cs" id="3_wmu2t"]
+[ext_resource type="Texture2D" uid="uid://blvnkgr3sgjgp" path="res://Assets/Revolver-Sillouhette.png" id="7_2rnr3"]
 [ext_resource type="Shader" uid="uid://chhcn1ifj0w0e" path="res://Scripts/Shaders/Curve.gdshader" id="7_dd0xs"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_58ppc"]
@@ -76,6 +77,13 @@ shadow_color = Color(0, 0, 0, 0.392157)
 shadow_size = 5
 shadow_offset = Vector2(7, 7)
 
+[sub_resource type="LabelSettings" id="LabelSettings_trq3c"]
+font = ExtResource("3_6iude")
+font_size = 55
+shadow_size = 5
+shadow_color = Color(0, 0, 0, 0.392157)
+shadow_offset = Vector2(7, 7)
+
 [node name="Game UI" type="Control"]
 layout_direction = 1
 layout_mode = 3
@@ -92,7 +100,7 @@ maxFallDistance = 60.0
 
 [node name="UIAnimations" type="Node" parent="." node_paths=PackedStringArray("animatableObjects")]
 script = ExtResource("2_0hk2f")
-animatableObjects = [NodePath("../Labels/Speed Label"), NodePath("../Labels/State Label"), NodePath("../Labels/Score Label"), NodePath("../Health & Armor")]
+animatableObjects = [NodePath("../Labels/Speed Label"), NodePath("../Labels/State Label"), NodePath("../Labels/Score Label"), NodePath("../Health & Armor"), NodePath("../Ammonition")]
 
 [node name="Labels" type="Node" parent="."]
 
@@ -149,17 +157,21 @@ label_settings = SubResource("LabelSettings_6iude")
 
 [node name="Health & Armor" type="Panel" parent="."]
 self_modulate = Color(1, 1, 1, 0)
+layout_direction = 1
 layout_mode = 1
-anchors_preset = 2
+anchors_preset = 3
+anchor_left = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 962.0
-offset_top = -115.0
-offset_right = 1240.0
-offset_bottom = -65.0
+offset_left = -350.0
+offset_top = -120.0
+offset_right = -50.0
+offset_bottom = -70.0
+grow_horizontal = 0
 grow_vertical = 0
 rotation = 0.0261799
-pivot_offset = Vector2(139, 46.5)
+pivot_offset = Vector2(300, 50)
 
 [node name="HealthSlider" type="HSlider" parent="Health & Armor"]
 material = SubResource("ShaderMaterial_2rnr3")
@@ -197,3 +209,39 @@ step = 0.1
 value = 100.0
 editable = false
 scrollable = false
+
+[node name="Ammonition" type="Panel" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 49.0
+offset_top = -148.0
+offset_right = 278.0
+offset_bottom = -50.0
+grow_vertical = 0
+rotation = -0.0261799
+pivot_offset = Vector2(0, 50)
+
+[node name="TextureRect" type="TextureRect" parent="Ammonition"]
+layout_mode = 0
+offset_right = 98.0
+offset_bottom = 98.0
+texture = ExtResource("7_2rnr3")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Ammonition"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 128.0
+offset_right = -26.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "6/6"
+label_settings = SubResource("LabelSettings_trq3c")
+horizontal_alignment = 1
+vertical_alignment = 1
