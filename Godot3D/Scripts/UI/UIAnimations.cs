@@ -82,16 +82,14 @@ public partial class UIAnimations : Node
             damageShakeTween.TweenMethod(Callable.From<float>((_) => ApplyDamageShake(objectIndex)),
                 0.0f, 1.0f, 0.05f);
 
-            // Create damage color flash effect
             var damageColorTween = CreateDamageEffectTween($"damageColor_{i}");
             Color currentColor = animatableObjects[i].Modulate;
             damageColorTween.TweenProperty(animatableObjects[i], "modulate", Colors.Red * 1.5f, 0.08f)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-            damageColorTween.TweenProperty(animatableObjects[i], "modulate", currentColor, 0.12f)
+            damageColorTween.TweenProperty(animatableObjects[i], "modulate", Colors.White, 0.12f)
                 .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
         }
 
-        // Auto-clear damage effects after animation completes
         var damageClearTween = CreateDamageEffectTween("damageClear");
         damageClearTween.TweenInterval(0.4f);
         damageClearTween.TweenCallback(Callable.From(StopDamageEffects));
