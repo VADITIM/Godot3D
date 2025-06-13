@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://dd4v11rqiyga"]
 
 [ext_resource type="Script" uid="uid://u8bg1t6muura" path="res://Scripts/Player/Player.cs" id="1_v0iea"]
-[ext_resource type="PackedScene" uid="uid://mkag7wgy2fpm" path="res://Scenes/Player Components.tscn" id="2_cvnsp"]
+[ext_resource type="PackedScene" uid="uid://mkag7wgy2fpm" path="res://Scenes/Components.tscn" id="2_cvnsp"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="3_dewec"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="4_5ixxa"]
 
@@ -52,5 +52,8 @@ debug_shape_thickness = 5
 [node name="Left" type="RayCast3D" parent="Raycasts"]
 target_position = Vector3(-0.7, 0, 0)
 debug_shape_thickness = 5
+
+[node name="Firing Point" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.833353, 0, -0.643027)
 
 [editable path="Components"]

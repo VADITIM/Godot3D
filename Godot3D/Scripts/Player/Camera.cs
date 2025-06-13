@@ -7,7 +7,6 @@ public partial class Camera : Node
 
     private float cameraXRotation = 0f;
 
-    // Camera shake variables
     private float shakeIntensity;
     private float shakeDuration;
     private float shakeTimer;

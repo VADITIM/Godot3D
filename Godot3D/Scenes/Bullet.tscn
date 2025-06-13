@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhp5uc38ckarx"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nr8tw"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_nr8tw"]
+
+[node name="Bullet" type="RigidBody3D"]
+mass = 0.001
+physics_material_override = SubResource("PhysicsMaterial_nr8tw")
+gravity_scale = 0.0
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+transform = Transform3D(0.43, 0, 0, 0, 0.43, 0, 0, 0, 0.43, 0, 0, 0)
+use_collision = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.43, 0, 0, 0, 0.43, 0, 0, 0, 0.43, 0, 0, 0)
+shape = SubResource("SphereShape3D_nr8tw")
